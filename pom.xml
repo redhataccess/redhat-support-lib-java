@@ -142,5 +142,5 @@
 		</plugins>
 		<finalName>redhat-support-lib-java</finalName>
 	</build>
-	<version>1.0.4</version>
+	<version>1.0.4.jbossorg-1</version>
 </project>
