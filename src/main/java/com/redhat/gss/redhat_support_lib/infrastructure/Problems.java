@@ -7,10 +7,10 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.ParseHelper;
@@ -18,8 +18,8 @@ import com.redhat.gss.redhat_support_lib.parsers.Link;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Problems extends BaseQuery {
-    private final static Logger LOGGER = Logger
-            .getLogger(Problems.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(Problems.class
+			.getName());
 	ConnectionManager connectionManager = null;
 	static String url = "/rs/problems/";
 
@@ -36,15 +36,15 @@ public class Problems extends BaseQuery {
 	 * @return An array of problems.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
-	public List<Link> diagnoseStr(String content) throws RequestException, MalformedURLException {
+	public List<Link> diagnoseStr(String content) throws RequestException,
+			MalformedURLException {
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse resp = add(webResource, content);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response resp = add(connectionManager.getConnection(), fullUrl, content);
 		com.redhat.gss.redhat_support_lib.parsers.Problems probs = resp
-				.getEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
+				.readEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
 		return ParseHelper.getLinksFromProblems(probs);
 	}
 
@@ -55,16 +55,14 @@ public class Problems extends BaseQuery {
 	 * @param fileName
 	 *            File name whose content you want diagnosed.
 	 * @return An array of problems.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<Link> diagnoseFile(String fileName) throws Exception {
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
 
-		ClientResponse resp = upload(webResource, new File(fileName), fileName);
+		Response resp = upload(connectionManager.getConnection(), fullUrl, new File(fileName), fileName);
 		com.redhat.gss.redhat_support_lib.parsers.Problems probs = resp
-				.getEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
+				.readEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
 		return ParseHelper.getLinksFromProblems(probs);
 	}
-
 }

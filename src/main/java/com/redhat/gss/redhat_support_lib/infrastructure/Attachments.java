@@ -11,15 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.internet.MimeUtility;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
-import com.sun.jersey.api.client.WebResource;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.errors.FTPException;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
@@ -73,11 +71,9 @@ public class Attachments extends BaseQuery {
 		if (endDate != null) {
 			queryParams.add("endDate=" + endDate);
 		}
-
-		WebResource webResource = connectionManager.getConnection().resource(
-				QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
-						+ url, queryParams));
-		com.redhat.gss.redhat_support_lib.parsers.Attachments attachments = get(webResource,
+		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
+						+ url, queryParams);
+		com.redhat.gss.redhat_support_lib.parsers.Attachments attachments = get(connectionManager.getConnection(), fullUrl,
 				com.redhat.gss.redhat_support_lib.parsers.Attachments.class);
 		return (List<Attachment>) FilterHelper.filterResults(
 				attachments.getAttachment(), kwargs);
@@ -110,16 +106,9 @@ public class Attachments extends BaseQuery {
 		url = url.replace("{caseNumber}", caseNumber);
 		url = url.replace("{attachmentUUID}", attachmentUUID);
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse response = webResource.accept("application/xml").get(
-				ClientResponse.class);
-		if (response.getStatus() != 200) {
-			LOGGER.debug("Failed : HTTP error code : " + response.getStatus());
-			throw new RuntimeException("Failed : HTTP error code : "
-					+ response.getStatus());
-		}
-		File tempfile = response.getEntity(File.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response response = get(connectionManager.getConnection(), fullUrl,	Response.class);
+		File tempfile = response.readEntity(File.class);
 		String filePath = new String();
 		if (destDir != null) {
 			filePath = filePath.concat(destDir);
@@ -130,7 +119,7 @@ public class Attachments extends BaseQuery {
 		if (fileName != null) {
 			filePath = filePath.concat(fileName);
 		} else {
-			String name = response.getHeaders().getFirst("Content-Disposition");
+			String name = response.getStringHeaders().getFirst("Content-Disposition");
 			String[] temp = name.split("\"");
 			String decoded = MimeUtility.decodeWord(temp[1]);
 			filePath = filePath.concat(decoded);
@@ -164,9 +153,8 @@ public class Attachments extends BaseQuery {
 		url = url.replace("{caseNumber}", caseNumber);
 		url = url.replace("{attachmentUUID}", attachmentUUID);
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		return delete(webResource);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		return delete(connectionManager.getConnection(), fullUrl);
 	}
 
 	/**
@@ -220,11 +208,9 @@ public class Attachments extends BaseQuery {
 			Comments comments = new Comments(connectionManager);
 			comments.add(comment);
 		} else {
-			WebResource webResource = connectionManager.getConnection()
-					.resource(
-							QueryBuilder.appendQuery(connectionManager
-									.getConfig().getUrl() + url, queryParams));
-			uri = upload(webResource, file, description).getHeaders().getFirst("location");
+			String fullUrl = connectionManager
+					.getConfig().getUrl() + url;
+			uri = upload(connectionManager.getConnection(), fullUrl, file, description).getStringHeaders().getFirst("location");
 		}
 		return uri;
 	}

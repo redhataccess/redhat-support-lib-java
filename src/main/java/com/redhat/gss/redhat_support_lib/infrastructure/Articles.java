@@ -6,19 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.api.API;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
 import com.redhat.gss.redhat_support_lib.parsers.Article;
-import com.redhat.gss.redhat_support_lib.parsers.Solution;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class Articles extends BaseQuery {
 	private final static Logger LOGGER = Logger.getLogger(API.class.getName());
@@ -41,9 +39,8 @@ public class Articles extends BaseQuery {
 	 * @throws MalformedURLException 
 	 */
 	public Article get(String artID) throws RequestException, MalformedURLException {
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url + artID);
-		return get(webResource, Article.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url + artID;
+		return get(connectionManager.getConnection(), fullUrl, Article.class);
 	}
 
 	/**
@@ -69,10 +66,9 @@ public class Articles extends BaseQuery {
 		for (String arg : keywords) {
 			queryParams.add("keyword=" + arg);
 		}
-		WebResource webResource = connectionManager.getConnection().resource(
-				QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
-						+ url, queryParams));
-		com.redhat.gss.redhat_support_lib.parsers.Articles articles = get(webResource,
+		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
+						+ url, queryParams);
+		com.redhat.gss.redhat_support_lib.parsers.Articles articles = get(connectionManager.getConnection(), fullUrl,
 				com.redhat.gss.redhat_support_lib.parsers.Articles.class);
 		return (List<Article>) FilterHelper.filterResults(
 				articles.getArticle(), kwargs);
@@ -86,10 +82,9 @@ public class Articles extends BaseQuery {
 	 *             An exception if there was a connection related issue
 	 */
 	public Article add(Article art) throws Exception {
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse resp = add(webResource, art);
-		MultivaluedMap<String, String> headers = resp.getHeaders();
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response resp = add(connectionManager.getConnection(), fullUrl, art);
+		MultivaluedMap<String, String> headers = resp.getStringHeaders();
 		URL url = null;
 		try {
 			url = new URL(headers.getFirst("view-uri"));

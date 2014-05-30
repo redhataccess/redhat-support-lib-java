@@ -5,14 +5,13 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.parsers.Product;
-import com.redhat.gss.redhat_support_lib.parsers.Solution;
 import com.redhat.gss.redhat_support_lib.parsers.Versions;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
-
-import com.sun.jersey.api.client.WebResource;
 
 public class Products extends BaseQuery {
 	ConnectionManager connectionManager = null;
@@ -33,13 +32,14 @@ public class Products extends BaseQuery {
 	 * @return A list of products
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
-	public List<Product> list(String[] kwargs) throws RequestException, MalformedURLException {
+	public List<Product> list(String[] kwargs) throws RequestException,
+			MalformedURLException {
 		String url = "/rs/products/";
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		com.redhat.gss.redhat_support_lib.parsers.Products prods = get(webResource,
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		com.redhat.gss.redhat_support_lib.parsers.Products prods = get(
+				connectionManager.getConnection(), fullUrl,
 				com.redhat.gss.redhat_support_lib.parsers.Products.class);
 		return (List<Product>) FilterHelper.filterResults(prods.getProduct(),
 				kwargs);
@@ -51,16 +51,17 @@ public class Products extends BaseQuery {
 	 * @return A list of versions
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.s
-	 * @throws MalformedURLException 
-	 * @throws UnsupportedEncodingException 
+	 * @throws MalformedURLException
+	 * @throws UnsupportedEncodingException
 	 */
-	public List<String> getVersions(String prodName) throws RequestException, MalformedURLException, UnsupportedEncodingException {
+	public List<String> getVersions(String prodName) throws RequestException,
+			MalformedURLException, UnsupportedEncodingException {
 		String url = "/rs/products/{prodName}/versions";
 		prodName = URLEncoder.encode(prodName, "UTF-8").replace("+", "%20");
 		url = url.replace("{prodName}", prodName);
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		Versions vers = get(webResource, Versions.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Versions vers = get(connectionManager.getConnection(), fullUrl,
+				Versions.class);
 		return vers.getVersion();
 	}
 }

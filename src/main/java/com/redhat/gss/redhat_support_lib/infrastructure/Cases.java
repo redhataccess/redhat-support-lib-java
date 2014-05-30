@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
@@ -16,9 +18,6 @@ import com.redhat.gss.redhat_support_lib.parsers.Case;
 import com.redhat.gss.redhat_support_lib.parsers.Values;
 import com.redhat.gss.redhat_support_lib.parsers.Values.Value;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class Cases extends BaseQuery {
 	private final static Logger LOGGER = Logger
@@ -43,9 +42,8 @@ public class Cases extends BaseQuery {
 	 */
 	public Case get(String caseNum) throws RequestException,
 			MalformedURLException {
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url + caseNum);
-		return get(webResource, Case.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url + caseNum;
+		return get(connectionManager.getConnection(), fullUrl, Case.class);
 	}
 
 	/**
@@ -134,11 +132,11 @@ public class Cases extends BaseQuery {
 			queryParams.add("detail=true");
 		}
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
-						+ url + "filter", queryParams));
+		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
+				.getUrl() + url + "filter", queryParams);
 		com.redhat.gss.redhat_support_lib.parsers.Cases cases = add(
-				webResource, xmlString.toString(),
+				connectionManager.getConnection(), fullUrl,
+				xmlString.toString(),
 				com.redhat.gss.redhat_support_lib.parsers.Cases.class);
 		return (List<Case>) FilterHelper.filterResults(cases.getCase(), kwargs);
 	}
@@ -156,10 +154,9 @@ public class Cases extends BaseQuery {
 	 */
 	public Case add(Case cas) throws Exception {
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse resp = add(webResource, cas);
-		MultivaluedMap<String, String> headers = resp.getHeaders();
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response resp = add(connectionManager.getConnection(), fullUrl, cas);
+		MultivaluedMap<String, String> headers = resp.getStringHeaders();
 		URL caseurl = null;
 		try {
 			caseurl = new URL(headers.getFirst("Location"));
@@ -188,10 +185,9 @@ public class Cases extends BaseQuery {
 	 */
 	public Case update(Case cas) throws RequestException, MalformedURLException {
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url
-						+ cas.getCaseNumber());
-		ClientResponse resp = update(webResource, cas);
+		String fullUrl = connectionManager.getConfig().getUrl() + url
+						+ cas.getCaseNumber();
+		Response resp = update(connectionManager.getConnection(), fullUrl, cas);
 		return cas;
 	}
 
@@ -209,10 +205,9 @@ public class Cases extends BaseQuery {
 	public List<Value> getSeverities() throws RequestException,
 			MalformedURLException {
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl()
-						+ "/rs/values/case/severity");
-		Values values = get(webResource, Values.class);
+		String fullUrl = connectionManager.getConfig().getUrl()
+						+ "/rs/values/case/severity";
+		Values values = get(connectionManager.getConnection(), fullUrl, Values.class);
 		return values.getValue();
 	}
 }

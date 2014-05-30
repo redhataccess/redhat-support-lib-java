@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
 import com.redhat.gss.redhat_support_lib.parsers.Comment;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class Comments extends BaseQuery {
 	private final static Logger LOGGER = Logger.getLogger(Comments.class
@@ -38,7 +37,7 @@ public class Comments extends BaseQuery {
 	 * @return A comment object that represents the given comment ID.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
 	public Comment get(String caseNumber, String commentID)
 			throws RequestException, MalformedURLException {
@@ -46,9 +45,8 @@ public class Comments extends BaseQuery {
 		String url = "/rs/cases/{caseNumber}/comments/{commentID}";
 		url = url.replace("{caseNumber}", caseNumber);
 		url = url.replace("{commentID}", commentID);
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		return get(webResource, Comment.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		return get(connectionManager.getConnection(), fullUrl, Comment.class);
 	}
 
 	/**
@@ -71,10 +69,11 @@ public class Comments extends BaseQuery {
 	 * @return A list of comment objects
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
 	public List<Comment> list(String caseNumber, String startDate,
-			String endDate, String[] kwargs) throws RequestException, MalformedURLException {
+			String endDate, String[] kwargs) throws RequestException,
+			MalformedURLException {
 
 		String url = "/rs/cases/{caseNumber}/comments";
 		url = url.replace("{caseNumber}", caseNumber);
@@ -85,10 +84,10 @@ public class Comments extends BaseQuery {
 		if (endDate != null) {
 			queryParams.add("endDate=" + endDate);
 		}
-		WebResource webResource = connectionManager.getConnection().resource(
-				QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
-						+ url, queryParams));
-		com.redhat.gss.redhat_support_lib.parsers.Comments comments = get(webResource,
+		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
+				.getUrl() + url, queryParams);
+		com.redhat.gss.redhat_support_lib.parsers.Comments comments = get(
+				connectionManager.getConnection(), fullUrl,
 				com.redhat.gss.redhat_support_lib.parsers.Comments.class);
 		return comments.getComment();
 	}
@@ -108,10 +107,9 @@ public class Comments extends BaseQuery {
 		String url = "/rs/cases/{caseNumber}/comments";
 		url = url.replace("{caseNumber}", comment.getCaseNumber());
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse resp = add(webResource, comment);
-		MultivaluedMap<String, String> headers = resp.getHeaders();
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response resp = add(connectionManager.getConnection(), fullUrl, comment);
+		MultivaluedMap<String, String> headers = resp.getStringHeaders();
 		URL caseurl = null;
 		try {
 			caseurl = new URL(headers.getFirst("Location"));

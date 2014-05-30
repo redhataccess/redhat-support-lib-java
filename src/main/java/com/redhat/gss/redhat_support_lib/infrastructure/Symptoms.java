@@ -1,18 +1,12 @@
 package com.redhat.gss.redhat_support_lib.infrastructure;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.util.List;
-import java.util.Scanner;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-
-import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptom;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
@@ -36,12 +30,11 @@ public class Symptoms extends BaseQuery {
 	 * @throws Exception 
 	 */
 	public List<ExtractedSymptom> retrieveSymptoms(String fileName) throws Exception {
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
 
-		ClientResponse resp = upload(webResource, new File(fileName), fileName);
-		com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptoms symptoms = resp
-				.getEntity(com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptoms.class);
+		Response response = upload(connectionManager.getConnection(), fullUrl, new File(fileName), fileName);
+		com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptoms symptoms = response
+				.readEntity(com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptoms.class);
 		return symptoms.getExtractedSymptom();
 	}
 

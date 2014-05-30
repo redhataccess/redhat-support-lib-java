@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.api.API;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
@@ -15,9 +17,6 @@ import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
 import com.redhat.gss.redhat_support_lib.parsers.Solution;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
 
 public class Solutions extends BaseQuery {
 	private final static Logger LOGGER = Logger.getLogger(API.class.getName());
@@ -37,13 +36,13 @@ public class Solutions extends BaseQuery {
 	 * @return A solution object that represents the given solution ID.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
-	public Solution get(String solNum) throws RequestException, MalformedURLException {
+	public Solution get(String solNum) throws RequestException,
+			MalformedURLException {
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url + solNum);
-		return get(webResource, Solution.class);
+		String fullUrl = connectionManager.getConfig().getUrl() + url + solNum;
+		return get(connectionManager.getConnection(), fullUrl, Solution.class);
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class Solutions extends BaseQuery {
 	 * @return A list of solution objects
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
-	 * @throws MalformedURLException 
+	 * @throws MalformedURLException
 	 */
 	public List<Solution> list(String[] keywords, String[] kwargs)
 			throws RequestException, MalformedURLException {
@@ -69,10 +68,10 @@ public class Solutions extends BaseQuery {
 		for (String keyword : keywords) {
 			queryParams.add("keyword=" + keyword);
 		}
-		WebResource webResource = connectionManager.getConnection().resource(
-				QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
-						+ url, queryParams));
-		com.redhat.gss.redhat_support_lib.parsers.Solutions solutions = get(webResource,
+		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
+				.getUrl() + url, queryParams);
+		com.redhat.gss.redhat_support_lib.parsers.Solutions solutions = get(
+				connectionManager.getConnection(), fullUrl,
 				com.redhat.gss.redhat_support_lib.parsers.Solutions.class);
 		return (List<Solution>) FilterHelper.filterResults(
 				solutions.getSolution(), kwargs);
@@ -91,10 +90,9 @@ public class Solutions extends BaseQuery {
 	public Solution add(Solution sol) throws Exception {
 		// TODO: Test once implemented
 
-		WebResource webResource = connectionManager.getConnection().resource(
-				connectionManager.getConfig().getUrl() + url);
-		ClientResponse resp = add(webResource, sol);
-		MultivaluedMap<String, String> headers = resp.getHeaders();
+		String fullUrl = connectionManager.getConfig().getUrl() + url;
+		Response resp = add(connectionManager.getConnection(), fullUrl, sol);
+		MultivaluedMap<String, String> headers = resp.getStringHeaders();
 		URL url = null;
 		try {
 			url = new URL(headers.getFirst("view-uri"));

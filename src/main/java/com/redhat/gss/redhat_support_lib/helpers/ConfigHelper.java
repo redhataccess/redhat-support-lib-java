@@ -21,7 +21,7 @@ public class ConfigHelper {
 	int maxConnections = 50;
 	long ftpFileSize = 900000000L;
 	String ftpDir = "/incoming";
-	String userAgent = null;
+	String userAgent = "";
 
 	public ConfigHelper(String username, String password, String url,
 			String proxyUser, String proxyPassword, URL proxyUrl,
