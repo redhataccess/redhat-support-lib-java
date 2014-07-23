@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
+import com.redhat.gss.redhat_support_lib.filters.RedHatCookieFilter;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPHTTPClient;
 import org.apache.log4j.Logger;
@@ -29,17 +30,20 @@ public class ConnectionManager {
 		clientBuilder.httpEngine(httpEngine);
 		if (config.isDevel()) {
 			clientBuilder.disableTrustManager();
-		} 
+		}
 		if (config.getProxyUrl() != null) {
 			clientBuilder.defaultProxy("10.13.49.98", config.getProxyPort());
 		}
 	}
 
 	public ResteasyClient getConnection() throws MalformedURLException {
-		ResteasyClient client =  clientBuilder.build();
-		client.register(new BasicAuthentication(config.getUsername(), config
-				.getPassword()));
-		client.register(new UserAgentFilter(config.getUserAgent()));
+        ResteasyClient client = clientBuilder.build();
+        if (config.getUsername() != null) {
+            client.register(new BasicAuthentication(config.getUsername(), config
+                    .getPassword()));
+        }
+        client.register(new UserAgentFilter(config.getUserAgent()));
+        client.register(new RedHatCookieFilter(config.getCookies()));
 		return client;
 	}
 
