@@ -37,7 +37,6 @@ public class BaseQuery {
 					+ " - " + response.getStatusInfo().getReasonPhrase());
 		}
 		T returnObject = response.readEntity(c);
-		client.close();
 		return returnObject;
 
 	}
@@ -73,7 +72,6 @@ public class BaseQuery {
 		}
 
 		T returnObject = response.readEntity(c);
-		client.close();
 		return returnObject;
 	}
 
