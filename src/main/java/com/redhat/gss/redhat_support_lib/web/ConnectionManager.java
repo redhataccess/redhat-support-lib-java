@@ -20,6 +20,7 @@ public class ConnectionManager {
 	private final static Logger LOGGER = Logger.getLogger(ConnectionManager.class.getName());
 	ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder().connectionPoolSize(100);
 	ConfigHelper config = null;
+    ResteasyClient client = null;
 
 	public ConnectionManager(ConfigHelper config) {
 		this.config = config;
@@ -36,14 +37,21 @@ public class ConnectionManager {
 		}
 	}
 
-	public ResteasyClient getConnection() throws MalformedURLException {
-        ResteasyClient client = clientBuilder.build();
-        if (config.getUsername() != null) {
-            client.register(new BasicAuthentication(config.getUsername(), config
-                    .getPassword()));
+    public ConnectionManager(ConfigHelper config, ResteasyClientBuilder clientBuilder) {
+        this.config = config;
+        this.clientBuilder = clientBuilder;
+    }
+
+    public ResteasyClient getConnection() throws MalformedURLException {
+        if(client == null) {
+            client = clientBuilder.build();
+            if (config.getUsername() != null) {
+                client.register(new BasicAuthentication(config.getUsername(), config
+                        .getPassword()));
+            }
+            client.register(new UserAgentFilter(config.getUserAgent()));
+            client.register(new RedHatCookieFilter(config.getCookies()));
         }
-        client.register(new UserAgentFilter(config.getUserAgent()));
-        client.register(new RedHatCookieFilter(config.getCookies()));
 		return client;
 	}
 
