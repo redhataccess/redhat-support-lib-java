@@ -42,6 +42,23 @@ public class ConfigHelper {
 		this.devel = devel;
 		this.userAgent = userAgent;
 	}
+	
+	public ConfigHelper(String username, String password, String url,
+			String proxyUser, String proxyPassword, URL proxyUrl,
+			int proxyPort, String userAgent, int connectionTimeout, boolean devel) {
+		this.username = username;
+		this.password = password.toCharArray();
+		if (url != null) {
+			this.url = url;
+
+		}
+		this.proxyUser = proxyUser;
+		this.proxyPassword = proxyPassword;
+		this.proxyUrl = proxyUrl;
+		this.proxyPort = proxyPort;
+		this.devel = devel;
+		this.userAgent = userAgent;
+	}
 
     public ConfigHelper(String url, String proxyUser, String proxyPassword, URL proxyUrl,
                         int proxyPort, String userAgent, Map<String, Cookie> cookies, boolean devel) {

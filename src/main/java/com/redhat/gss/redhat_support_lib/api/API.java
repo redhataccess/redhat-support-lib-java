@@ -111,6 +111,47 @@ public class API {
 		groups = new Groups(connectionManager);
 		symptoms = new Symptoms(connectionManager);
 	}
+	
+	/**
+	 * @param username
+	 *            Strata username
+	 * @param password
+	 *            Strata password
+	 * @param url
+	 *            URL for Strata, default is https://api.access.redhat.com
+	 * @param proxyUser
+	 *            Proxy server username
+	 * @param proxyPassword
+	 *            Proxy server password
+	 * @param proxyUrl
+	 *            URL for proxy server
+	 * @param proxyPort
+	 *            Proxy server port
+	 * @param userAgent
+	 *            User agent string
+	 * @param connectionTimeout
+	 *            Connection Timeout
+	 * @param isDevel
+	 *            Only true if debugging for development
+	 */
+	public API(String username, String password, String url, String proxyUser,
+			String proxyPassword, URL proxyUrl, int proxyPort, String userAgent, int connectionTimeout, boolean isDevel) {
+		config = new ConfigHelper(username, password, url, proxyUser,
+				proxyPassword, proxyUrl, proxyPort, userAgent, connectionTimeout, isDevel);
+		connectionManager = new ConnectionManager(config);
+
+		solutions = new Solutions(connectionManager);
+		articles = new Articles(connectionManager);
+		cases = new Cases(connectionManager);
+		products = new Products(connectionManager);
+		comments = new Comments(connectionManager);
+		entitlements = new Entitlements(connectionManager);
+		problems = new Problems(connectionManager);
+		attachments = new Attachments(connectionManager);
+		ping = new Ping(connectionManager);
+		groups = new Groups(connectionManager);
+		symptoms = new Symptoms(connectionManager);
+	}
 
     public API(String url, String proxyUser,
                String proxyPassword, URL proxyUrl, int proxyPort, String userAgent, Map<String, Cookie> cookies, boolean isDevel) {

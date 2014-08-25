@@ -33,7 +33,7 @@ public class ConnectionManager {
 			clientBuilder.disableTrustManager();
 		}
 		if (config.getProxyUrl() != null) {
-			clientBuilder.defaultProxy("10.13.49.98", config.getProxyPort());
+			clientBuilder.defaultProxy(config.getProxyUrl().getHost(), config.getProxyPort());
 		}
 	}
 
