@@ -50,7 +50,9 @@ public class ConnectionManager {
                         .getPassword()));
             }
             client.register(new UserAgentFilter(config.getUserAgent()));
-            client.register(new RedHatCookieFilter(config.getCookies()));
+            if(config.getCookies() != null){
+            	client.register(new RedHatCookieFilter(config.getCookies()));
+            }
         }
 		return client;
 	}

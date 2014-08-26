@@ -22,7 +22,9 @@ public class RedHatCookieFilter implements ClientRequestFilter {
 
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
-        List cookies = new ArrayList(this.cookies.values());
-        clientRequestContext.getHeaders().put("Cookie", cookies);
+    	if(this.cookies != null){
+    		List cookies = new ArrayList(this.cookies.values());
+        	clientRequestContext.getHeaders().put("Cookie", cookies);
+    	}
     }
 }
