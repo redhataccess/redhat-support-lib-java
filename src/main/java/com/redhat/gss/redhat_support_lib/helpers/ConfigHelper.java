@@ -45,7 +45,7 @@ public class ConfigHelper {
 	
 	public ConfigHelper(String username, String password, String url,
 			String proxyUser, String proxyPassword, URL proxyUrl,
-			int proxyPort, String userAgent, int connectionTimeout, boolean devel) {
+			int proxyPort, String userAgent, int timeout, boolean devel) {
 		this.username = username;
 		this.password = password.toCharArray();
 		if (url != null) {
@@ -58,6 +58,7 @@ public class ConfigHelper {
 		this.proxyPort = proxyPort;
 		this.devel = devel;
 		this.userAgent = userAgent;
+		this.timeout = timeout;
 	}
 
     public ConfigHelper(String url, String proxyUser, String proxyPassword, URL proxyUrl,
