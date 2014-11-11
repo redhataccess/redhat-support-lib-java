@@ -4,20 +4,19 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
 
-import com.redhat.gss.redhat_support_lib.filters.RedHatCookieFilter;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPHTTPClient;
-import org.apache.log4j.Logger;
 import org.jboss.resteasy.client.jaxrs.BasicAuthentication;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+
 import com.redhat.gss.redhat_support_lib.errors.FTPException;
+import com.redhat.gss.redhat_support_lib.filters.RedHatCookieFilter;
 import com.redhat.gss.redhat_support_lib.filters.UserAgentFilter;
 import com.redhat.gss.redhat_support_lib.helpers.ConfigHelper;
 
 public class ConnectionManager {
 
-	private final static Logger LOGGER = Logger.getLogger(ConnectionManager.class.getName());
 	ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder().connectionPoolSize(100);
 	ConfigHelper config = null;
     ResteasyClient client = null;

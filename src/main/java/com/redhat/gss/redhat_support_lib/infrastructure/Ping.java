@@ -1,14 +1,11 @@
 package com.redhat.gss.redhat_support_lib.infrastructure;
 
 import java.net.MalformedURLException;
-import org.apache.log4j.Logger;
-import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Ping extends BaseQuery {
-	private final static Logger LOGGER = Logger.getLogger(Ping.class.getName());
 	ConnectionManager connectionManager = null;
 	static String url = "/rs/";
 

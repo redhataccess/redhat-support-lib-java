@@ -20,7 +20,6 @@ public class RedHatCookieFilter implements ClientRequestFilter {
         this.cookies = cookies;
     }
 
-    @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
     	if(this.cookies != null){
     		List cookies = new ArrayList(this.cookies.values());
