@@ -8,6 +8,9 @@
 	<version>2.0.7</version>
 	<name>redhat-support-lib-java</name>
 	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.logging</groupId>
@@ -86,6 +89,7 @@
 					</execution>
 				</executions>
 				<configuration>
+					<encoding>UTF-8</encoding>
 					<packageName>com.redhat.gss.redhat_support_lib.parsers</packageName>
 					<extension>true</extension>
 					<bindingDirectory>binding.xjb</bindingDirectory>
