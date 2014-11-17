@@ -14,12 +14,9 @@ public class Ping extends BaseQuery {
 	}
 
 	/**
-	 * Queries the API for the given case number. RESTful method:
-	 * https://api.access.redhat.com/rs/cases/<caseNumber>
+	 * Ping a connection
 	 * 
-	 * @param caseNum
-	 *            The exact caseNumber you are interested in.
-	 * @return A case object that represents the given case number.
+	 * @return A string object.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException

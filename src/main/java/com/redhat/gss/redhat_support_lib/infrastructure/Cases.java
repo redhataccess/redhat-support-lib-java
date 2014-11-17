@@ -172,11 +172,11 @@ public class Cases extends BaseQuery {
 	}
 
 	/**
-	 * Add a new case
+	 * Update an existing case
 	 * 
 	 * @param cas
-	 *            The case to be added.
-	 * @return The same case with the case number and view_uri set if
+	 *            The case to be updated.
+	 * @return The same case updated with the new case information if
 	 *         successful.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
@@ -191,12 +191,9 @@ public class Cases extends BaseQuery {
 	}
 
 	/**
-	 * Add a new case
+	 * Get severities
 	 * 
-	 * @param cas
-	 *            The case to be added.
-	 * @return The same case with the case number and view_uri set if
-	 *         successful.
+	 * @return The list of severities.
 	 * @throws RequestException
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
