@@ -26,18 +26,23 @@
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
-			<version>3.0.8.Final</version>
+			<version>3.0.10.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-multipart-provider</artifactId>
-			<version>3.0.8.Final</version>
+			<version>3.0.10.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.3.3</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -90,6 +95,7 @@
 				</executions>
 				<configuration>
 					<encoding>UTF-8</encoding>
+					<schemaFiles>strata.xsd</schemaFiles>
 					<packageName>com.redhat.gss.redhat_support_lib.parsers</packageName>
 					<extension>true</extension>
 					<bindingDirectory>binding.xjb</bindingDirectory>

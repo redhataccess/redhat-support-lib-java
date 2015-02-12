@@ -7,12 +7,12 @@ import java.util.List;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
-import com.redhat.gss.redhat_support_lib.parsers.Product;
-import com.redhat.gss.redhat_support_lib.parsers.Versions;
+import com.redhat.gss.redhat_support_lib.parsers.ProductType;
+import com.redhat.gss.redhat_support_lib.parsers.VersionsType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Products extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 
 	public Products(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
@@ -32,14 +32,15 @@ public class Products extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Product> list(String[] kwargs) throws RequestException,
+	@SuppressWarnings("unchecked")
+	public List<ProductType> list(String[] kwargs) throws RequestException,
 			MalformedURLException {
 		String url = "/rs/products/";
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
-		com.redhat.gss.redhat_support_lib.parsers.Products prods = get(
+		com.redhat.gss.redhat_support_lib.parsers.ProductsType prods = get(
 				connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Products.class);
-		return (List<Product>) FilterHelper.filterResults(prods.getProduct(),
+				com.redhat.gss.redhat_support_lib.parsers.ProductsType.class);
+		return (List<ProductType>) FilterHelper.filterResults(prods.getProduct(),
 				kwargs);
 	}
 
@@ -58,8 +59,8 @@ public class Products extends BaseQuery {
 		prodName = URLEncoder.encode(prodName, "UTF-8").replace("+", "%20");
 		url = url.replace("{prodName}", prodName);
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
-		Versions vers = get(connectionManager.getConnection(), fullUrl,
-				Versions.class);
+		VersionsType vers = get(connectionManager.getConnection(), fullUrl,
+				VersionsType.class);
 		return vers.getVersion();
 	}
 }

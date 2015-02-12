@@ -8,18 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import com.redhat.gss.redhat_support_lib.parsers.Link;
-import com.redhat.gss.redhat_support_lib.parsers.Problem;
-import com.redhat.gss.redhat_support_lib.parsers.Problems;
+import com.redhat.gss.redhat_support_lib.parsers.LinkType;
+import com.redhat.gss.redhat_support_lib.parsers.ProblemType;
+import com.redhat.gss.redhat_support_lib.parsers.ProblemsType;
 
 public class ParseHelper {
-	public static List<Link> getLinksFromProblems(Problems probs){
-		List<Link> links = new ArrayList<Link>();
+	public static List<LinkType> getLinksFromProblems(ProblemsType probs){
+		List<LinkType> links = new ArrayList<LinkType>();
 		for(Serializable prob : probs.getSourceOrLinkOrProblem()){
-			if(prob instanceof Problem){
-				for(Serializable link : ((Problem) prob).getSourceOrLink()){
-					if(link instanceof Link){
-						links.add((Link) link);
+			if(prob instanceof ProblemType){
+				for(Serializable link : ((ProblemType) prob).getSourceOrLink()){
+					if(link instanceof LinkType){
+						links.add((LinkType) link);
 					}
 				}
 			}

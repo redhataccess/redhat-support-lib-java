@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
-import com.redhat.gss.redhat_support_lib.parsers.Group;
+import com.redhat.gss.redhat_support_lib.parsers.GroupType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Groups extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/groups/";
 
 	public Groups(ConnectionManager connectionManager) {
@@ -26,12 +26,13 @@ public class Groups extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Group> list() throws RequestException, MalformedURLException {
+	@SuppressWarnings("unchecked")
+	public List<GroupType> list() throws RequestException, MalformedURLException {
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
-		com.redhat.gss.redhat_support_lib.parsers.Groups groups = get(
+		com.redhat.gss.redhat_support_lib.parsers.GroupsType groups = get(
 				connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Groups.class);
-		return (List<Group>) FilterHelper
+				com.redhat.gss.redhat_support_lib.parsers.GroupsType.class);
+		return (List<GroupType>) FilterHelper
 				.filterResults(groups.getGroup(), null);
 	}
 }

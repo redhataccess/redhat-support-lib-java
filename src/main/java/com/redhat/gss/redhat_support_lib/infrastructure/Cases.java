@@ -13,15 +13,15 @@ import org.jboss.logging.Logger;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
-import com.redhat.gss.redhat_support_lib.parsers.Case;
-import com.redhat.gss.redhat_support_lib.parsers.Values;
-import com.redhat.gss.redhat_support_lib.parsers.Values.Value;
+import com.redhat.gss.redhat_support_lib.parsers.CaseType;
+import com.redhat.gss.redhat_support_lib.parsers.ValuesType;
+import com.redhat.gss.redhat_support_lib.parsers.ValueType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Cases extends BaseQuery {
 	private final static Logger LOGGER = Logger
 			.getLogger(Cases.class.getName());
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/cases/";
 
 	public Cases(ConnectionManager connectionManager) {
@@ -39,10 +39,10 @@ public class Cases extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public Case get(String caseNum) throws RequestException,
+	public CaseType get(String caseNum) throws RequestException,
 			MalformedURLException {
 		String fullUrl = connectionManager.getConfig().getUrl() + url + caseNum;
-		return get(connectionManager.getConnection(), fullUrl, Case.class);
+		return get(connectionManager.getConnection(), fullUrl, CaseType.class);
 	}
 
 	/**
@@ -72,7 +72,8 @@ public class Cases extends BaseQuery {
 	 * @throws MalformedURLException
 	 */
 
-	public List<Case> list(String[] keywords, boolean includeClosed,
+	@SuppressWarnings("unchecked")
+	public List<CaseType> list(String[] keywords, boolean includeClosed,
 			boolean detail, String group, String startDate, String endDate,
 			String count, String start, String[] kwargs)
 			throws RequestException, MalformedURLException {
@@ -133,11 +134,11 @@ public class Cases extends BaseQuery {
 
 		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
 				.getUrl() + url + "filter", queryParams);
-		com.redhat.gss.redhat_support_lib.parsers.Cases cases = add(
+		com.redhat.gss.redhat_support_lib.parsers.CasesType cases = add(
 				connectionManager.getConnection(), fullUrl,
 				xmlString.toString(),
-				com.redhat.gss.redhat_support_lib.parsers.Cases.class);
-		return (List<Case>) FilterHelper.filterResults(cases.getCase(), kwargs);
+				com.redhat.gss.redhat_support_lib.parsers.CasesType.class);
+		return (List<CaseType>) FilterHelper.filterResults(cases.getCase(), kwargs);
 	}
 
 	/**
@@ -151,7 +152,7 @@ public class Cases extends BaseQuery {
 	 * @throws Exception
 	 *             An exception if there was a connection related issue.
 	 */
-	public Case add(Case cas) throws Exception {
+	public CaseType add(CaseType cas) throws Exception {
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
 		Response resp = add(connectionManager.getConnection(), fullUrl, cas);
@@ -182,11 +183,11 @@ public class Cases extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public Case update(Case cas) throws RequestException, MalformedURLException {
+	public CaseType update(CaseType cas) throws RequestException, MalformedURLException {
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url
 						+ cas.getCaseNumber();
-		Response resp = update(connectionManager.getConnection(), fullUrl, cas);
+		update(connectionManager.getConnection(), fullUrl, cas);
 		return cas;
 	}
 
@@ -198,12 +199,12 @@ public class Cases extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Value> getSeverities() throws RequestException,
+	public List<ValueType> getSeverities() throws RequestException,
 			MalformedURLException {
 
 		String fullUrl = connectionManager.getConfig().getUrl()
 						+ "/rs/values/case/severity";
-		Values values = get(connectionManager.getConnection(), fullUrl, Values.class);
+		ValuesType values = get(connectionManager.getConnection(), fullUrl, ValuesType.class);
 		return values.getValue();
 	}
 }

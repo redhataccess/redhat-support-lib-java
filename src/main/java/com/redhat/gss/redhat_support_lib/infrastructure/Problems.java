@@ -8,11 +8,11 @@ import javax.ws.rs.core.Response;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.ParseHelper;
-import com.redhat.gss.redhat_support_lib.parsers.Link;
+import com.redhat.gss.redhat_support_lib.parsers.LinkType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Problems extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/problems/";
 
 	public Problems(ConnectionManager connectionManager) {
@@ -30,13 +30,13 @@ public class Problems extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Link> diagnoseStr(String content) throws RequestException,
+	public List<LinkType> diagnoseStr(String content) throws RequestException,
 			MalformedURLException {
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
 		Response resp = add(connectionManager.getConnection(), fullUrl, content);
-		com.redhat.gss.redhat_support_lib.parsers.Problems probs = resp
-				.readEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
+		com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
+				.readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
 		return ParseHelper.getLinksFromProblems(probs);
 	}
 
@@ -49,12 +49,12 @@ public class Problems extends BaseQuery {
 	 * @return An array of problems.
 	 * @throws Exception
 	 */
-	public List<Link> diagnoseFile(String fileName) throws Exception {
+	public List<LinkType> diagnoseFile(String fileName) throws Exception {
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
 
 		Response resp = upload(connectionManager.getConnection(), fullUrl, new File(fileName), fileName);
-		com.redhat.gss.redhat_support_lib.parsers.Problems probs = resp
-				.readEntity(com.redhat.gss.redhat_support_lib.parsers.Problems.class);
+		com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
+				.readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
 		return ParseHelper.getLinksFromProblems(probs);
 	}
 }

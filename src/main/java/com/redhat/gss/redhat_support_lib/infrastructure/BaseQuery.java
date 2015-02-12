@@ -2,13 +2,16 @@ package com.redhat.gss.redhat_support_lib.infrastructure;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 
+import javax.mail.internet.MimeUtility;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.util.Base64;
 import org.jboss.logging.Logger;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -18,8 +21,9 @@ import com.redhat.gss.redhat_support_lib.api.API;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 
 public class BaseQuery {
+	
 	private final static Logger LOGGER = Logger.getLogger(API.class.getName());
-
+	
 	protected <T> T get(ResteasyClient client, String uri, Class<T> c)
 			throws RequestException {
 		Response response = client.target(uri).request()
@@ -34,7 +38,50 @@ public class BaseQuery {
 		}
 		T returnObject = response.readEntity(c);
 		return returnObject;
-
+	}
+	
+	protected String getFile(ResteasyClient client, String uri, String fileName, 
+			String destDir) 
+		throws RequestException, IOException, javax.mail.internet.ParseException {
+		Response response = client.target(uri).request()
+				.accept(MediaType.APPLICATION_XML).get();
+		
+		if(response.getStatus() != 200) {
+			LOGGER.debug("Failed : HTTP error code : "
+					+ response.getStatusInfo().getStatusCode() + " - "
+					+ response.getStatusInfo().getReasonPhrase());
+			throw new RequestException(response.getStatusInfo().getStatusCode()
+					+ " - " + response.getStatusInfo().getReasonPhrase());
+		}
+		
+		// copy file using buffer to temporary file
+		response.bufferEntity();
+        File file = response.readEntity(File.class);        
+		
+        // if destDir supplied then move temporary file to specified directory
+        StringBuffer filePath = new StringBuffer();
+        if (destDir != null) {
+        	String nameOfFile;
+			filePath.append(destDir);
+			if(!destDir.endsWith(File.separator)) {
+				filePath.append(File.separator);
+			}			
+		
+			if (fileName != null) {
+				nameOfFile = fileName;			
+			} else {
+				String name = response.getStringHeaders().getFirst("Content-Disposition");
+				String[] temp = name.split("\"");
+				nameOfFile = MimeUtility.decodeWord(temp[1]);	
+			}
+			filePath.append(nameOfFile);
+			File movedFile = new File(filePath.toString());
+			FileUtils.moveFile(file, movedFile);	
+			file.delete();
+			file = movedFile;
+        }
+		
+		return file.getAbsolutePath();
 	}
 
 	protected Response add(ResteasyClient client, String uri, Object object)
@@ -90,7 +137,7 @@ public class BaseQuery {
 	protected boolean delete(ResteasyClient client, String uri)
 			throws RequestException {
 		Response response = (Response) client.target(uri).request()
-				.accept(MediaType.APPLICATION_XML).delete(Response.class);
+				.delete(Response.class);
 		if (response.getStatus() > 399) {
 			LOGGER.debug("Failed : HTTP error code : "
 					+ response.getStatusInfo().getStatusCode() + " - "
@@ -133,7 +180,6 @@ public class BaseQuery {
 			builder.header("description", description);
 			//builder.header("Content-Type", "multipart/form-data; boundary=--64f32fd8-b239-4a1e-a580-6ed5976f8a82");
 		}
-		String blah = mdo.getBoundary();
 		Response response = builder.post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
 
 		// FormDataMultiPart part = new FormDataMultiPart();

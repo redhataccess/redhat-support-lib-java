@@ -14,12 +14,12 @@ import com.redhat.gss.redhat_support_lib.api.API;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
-import com.redhat.gss.redhat_support_lib.parsers.Solution;
+import com.redhat.gss.redhat_support_lib.parsers.SolutionType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Solutions extends BaseQuery {
 	private final static Logger LOGGER = Logger.getLogger(API.class.getName());
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/solutions/";
 
 	public Solutions(ConnectionManager connectionManager) {
@@ -37,11 +37,11 @@ public class Solutions extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public Solution get(String solNum) throws RequestException,
+	public SolutionType get(String solNum) throws RequestException,
 			MalformedURLException {
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url + solNum;
-		return get(connectionManager.getConnection(), fullUrl, Solution.class);
+		return get(connectionManager.getConnection(), fullUrl, SolutionType.class);
 	}
 
 	/**
@@ -60,7 +60,8 @@ public class Solutions extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Solution> list(String[] keywords, String[] kwargs)
+	@SuppressWarnings("unchecked")
+	public List<SolutionType> list(String[] keywords, String[] kwargs)
 			throws RequestException, MalformedURLException {
 
 		List<String> queryParams = new ArrayList<String>();
@@ -69,10 +70,10 @@ public class Solutions extends BaseQuery {
 		}
 		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
 				.getUrl() + url, queryParams);
-		com.redhat.gss.redhat_support_lib.parsers.Solutions solutions = get(
+		com.redhat.gss.redhat_support_lib.parsers.SolutionsType solutions = get(
 				connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Solutions.class);
-		return (List<Solution>) FilterHelper.filterResults(
+				com.redhat.gss.redhat_support_lib.parsers.SolutionsType.class);
+		return (List<SolutionType>) FilterHelper.filterResults(
 				solutions.getSolution(), kwargs);
 	}
 
@@ -86,7 +87,7 @@ public class Solutions extends BaseQuery {
 	 *             An exception if there was a connection, file open, etc.
 	 *             issue.
 	 */
-	public Solution add(Solution sol) throws Exception {
+	public SolutionType add(SolutionType sol) throws Exception {
 		// TODO: Test once implemented
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url;

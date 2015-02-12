@@ -7,11 +7,11 @@ import java.util.List;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
-import com.redhat.gss.redhat_support_lib.parsers.Entitlement;
+import com.redhat.gss.redhat_support_lib.parsers.EntitlementType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Entitlements extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/entitlements";
 
 	public Entitlements(ConnectionManager connectionManager) {
@@ -37,7 +37,8 @@ public class Entitlements extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Entitlement> list(boolean activeOnly, String product,
+	@SuppressWarnings("unchecked")
+	public List<EntitlementType> list(boolean activeOnly, String product,
 			String[] kwargs) throws RequestException, MalformedURLException {
 
 		// Strata is inverted in several respects, the option for filtering
@@ -50,10 +51,10 @@ public class Entitlements extends BaseQuery {
 		}
 		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
 				.getUrl() + url, queryParams);
-		com.redhat.gss.redhat_support_lib.parsers.Entitlements entitlements = get(
+		com.redhat.gss.redhat_support_lib.parsers.EntitlementsType entitlements = get(
 				connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Entitlements.class);
-		return (List<Entitlement>) FilterHelper.filterResults(
+				com.redhat.gss.redhat_support_lib.parsers.EntitlementsType.class);
+		return (List<EntitlementType>) FilterHelper.filterResults(
 				entitlements.getEntitlement(), kwargs);
 	}
 }

@@ -6,7 +6,7 @@ import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Ping extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 	static String url = "/rs/";
 
 	public Ping(ConnectionManager connectionManager) {

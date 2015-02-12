@@ -16,12 +16,12 @@ import com.redhat.gss.redhat_support_lib.errors.FTPException;
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.FilterHelper;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
-import com.redhat.gss.redhat_support_lib.parsers.Attachment;
-import com.redhat.gss.redhat_support_lib.parsers.Comment;
+import com.redhat.gss.redhat_support_lib.parsers.AttachmentType;
+import com.redhat.gss.redhat_support_lib.parsers.CommentType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Attachments extends BaseQuery {
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 
 	public Attachments(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
@@ -49,7 +49,8 @@ public class Attachments extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Attachment> list(String caseNumber, String startDate,
+	@SuppressWarnings("unchecked")
+	public List<AttachmentType> list(String caseNumber, String startDate,
 			String endDate, String[] kwargs) throws RequestException,
 			MalformedURLException {
 
@@ -64,9 +65,9 @@ public class Attachments extends BaseQuery {
 		}
 		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig().getUrl()
 						+ url, queryParams);
-		com.redhat.gss.redhat_support_lib.parsers.Attachments attachments = get(connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Attachments.class);
-		return (List<Attachment>) FilterHelper.filterResults(
+		com.redhat.gss.redhat_support_lib.parsers.AttachmentsType attachments = get(connectionManager.getConnection(), fullUrl,
+				com.redhat.gss.redhat_support_lib.parsers.AttachmentsType.class);
+		return (List<AttachmentType>) FilterHelper.filterResults(
 				attachments.getAttachment(), kwargs);
 	}
 
@@ -84,7 +85,8 @@ public class Attachments extends BaseQuery {
 	 *            downloaded. If none is specified, the original filename will
 	 *            be used.
 	 * @param destDir
-	 *            The directory which the attachment should be saved in.
+	 *            The directory which the attachment should be saved in. If 
+	 *            none is specified, a temporary file will be created. 
 	 * @return The path to the saved file as a string.
 	 * @throws Exception
 	 *             An exception if there was a connection, file open, etc.
@@ -98,29 +100,8 @@ public class Attachments extends BaseQuery {
 		url = url.replace("{attachmentUUID}", attachmentUUID);
 
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
-		Response response = get(connectionManager.getConnection(), fullUrl,	Response.class);
-		File tempfile = response.readEntity(File.class);
-		String filePath = new String();
-		if (destDir != null) {
-			filePath = filePath.concat(destDir);
-			if (!filePath.endsWith(File.separator)) {
-				filePath = filePath.concat(File.separator);
-			}
-		}
-		if (fileName != null) {
-			filePath = filePath.concat(fileName);
-		} else {
-			String name = response.getStringHeaders().getFirst("Content-Disposition");
-			String[] temp = name.split("\"");
-			String decoded = MimeUtility.decodeWord(temp[1]);
-			filePath = filePath.concat(decoded);
-		}
-		File file = new File(filePath);
-
-		// moveFile will throw an exception here if it encounters issues
-		FileUtils.moveFile(tempfile, file);
-
-		return file.getName();
+		return getFile(connectionManager.getConnection(), fullUrl, 
+				fileName, destDir);
 	}
 
 	/**
@@ -175,15 +156,18 @@ public class Attachments extends BaseQuery {
 		// TODO: put in constants size is 2GB
 		if (file.length() > connectionManager.getConfig().getFtpFileSize()) {
 			FTPClient ftp = null;
+			FileInputStream fis = null;
 			try {
 				ftp = connectionManager.getFTP();
 				ftp.cwd(connectionManager.getConfig().getFtpDir());
 				ftp.enterLocalPassiveMode();
-				if (!ftp.storeFile(file.getName(), new FileInputStream(file))) {
+				fis = new FileInputStream(file);
+				if (!ftp.storeFile(file.getName(), fis)) {
 					throw new FTPException("Error during FTP store file.");
 				}
 
 			} finally {
+				fis.close();
 				ftp.logout();
 			}
 
@@ -192,7 +176,7 @@ public class Attachments extends BaseQuery {
 					+ " exceeds the byte limit to attach a file to a case; therefore, the file was uploaded to "
 					+ connectionManager.getConfig().getFtpHost() + "as "
 					+ file.getName();
-			Comment comment = new Comment();
+			CommentType comment = new CommentType();
 			comment.setCaseNumber(caseNumber);
 			comment.setPublic(true);
 			comment.setText(cmntText);

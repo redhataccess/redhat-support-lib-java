@@ -13,6 +13,7 @@ import com.redhat.gss.redhat_support_lib.infrastructure.Entitlements;
 import com.redhat.gss.redhat_support_lib.infrastructure.Ping;
 import com.redhat.gss.redhat_support_lib.infrastructure.Problems;
 import com.redhat.gss.redhat_support_lib.infrastructure.Products;
+import com.redhat.gss.redhat_support_lib.infrastructure.Search;
 import com.redhat.gss.redhat_support_lib.infrastructure.Solutions;
 import com.redhat.gss.redhat_support_lib.infrastructure.Groups;
 import com.redhat.gss.redhat_support_lib.infrastructure.Symptoms;
@@ -24,6 +25,7 @@ public class API {
 	ConfigHelper config = null;
 	ConnectionManager connectionManager = null;
 
+	Search search = null;
 	Solutions solutions = null;
 	Articles articles = null;
 	Cases cases = null;
@@ -60,6 +62,7 @@ public class API {
 				proxyPassword, proxyUrl, proxyPort, userAgent, false);
 		connectionManager = new ConnectionManager(config);
 
+		search = new Search(connectionManager);
 		solutions = new Solutions(connectionManager);
 		articles = new Articles(connectionManager);
 		cases = new Cases(connectionManager);
@@ -99,6 +102,7 @@ public class API {
 				proxyPassword, proxyUrl, proxyPort, userAgent, isDevel);
 		connectionManager = new ConnectionManager(config);
 
+		search = new Search(connectionManager);
 		solutions = new Solutions(connectionManager);
 		articles = new Articles(connectionManager);
 		cases = new Cases(connectionManager);
@@ -140,6 +144,7 @@ public class API {
 				proxyPassword, proxyUrl, proxyPort, userAgent, connectionTimeout, isDevel);
 		connectionManager = new ConnectionManager(config);
 
+		search = new Search(connectionManager);
 		solutions = new Solutions(connectionManager);
 		articles = new Articles(connectionManager);
 		cases = new Cases(connectionManager);
@@ -159,7 +164,8 @@ public class API {
                 proxyPassword, proxyUrl, proxyPort, userAgent, cookies, isDevel);
         connectionManager = new ConnectionManager(config);
 
-        solutions = new Solutions(connectionManager);
+        search = new Search(connectionManager);
+		solutions = new Solutions(connectionManager);
         articles = new Articles(connectionManager);
         cases = new Cases(connectionManager);
         products = new Products(connectionManager);
@@ -181,6 +187,7 @@ public class API {
 				ftpUsername, ftpPassword, devel);
 		connectionManager = new ConnectionManager(config);
 
+		search = new Search(connectionManager);
 		solutions = new Solutions(connectionManager);
 		articles = new Articles(connectionManager);
 		cases = new Cases(connectionManager);
@@ -198,6 +205,7 @@ public class API {
 		config = new ConfigHelper(configFileName);
 		connectionManager = new ConnectionManager(config);
 
+		search = new Search(connectionManager);
 		solutions = new Solutions(connectionManager);
 		articles = new Articles(connectionManager);
 		cases = new Cases(connectionManager);
@@ -211,6 +219,10 @@ public class API {
 		symptoms = new Symptoms(connectionManager);
 	}
 
+	public Search getSearch() {
+		return search;
+	}
+	
 	public Solutions getSolutions() {
 		return solutions;
 	}

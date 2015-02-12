@@ -12,13 +12,13 @@ import org.jboss.logging.Logger;
 
 import com.redhat.gss.redhat_support_lib.errors.RequestException;
 import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
-import com.redhat.gss.redhat_support_lib.parsers.Comment;
+import com.redhat.gss.redhat_support_lib.parsers.CommentType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Comments extends BaseQuery {
 	private final static Logger LOGGER = Logger.getLogger(Comments.class
 			.getName());
-	ConnectionManager connectionManager = null;
+	private ConnectionManager connectionManager = null;
 
 	public Comments(ConnectionManager connectionManager) {
 		this.connectionManager = connectionManager;
@@ -38,14 +38,14 @@ public class Comments extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public Comment get(String caseNumber, String commentID)
+	public CommentType get(String caseNumber, String commentID)
 			throws RequestException, MalformedURLException {
 
 		String url = "/rs/cases/{caseNumber}/comments/{commentID}";
 		url = url.replace("{caseNumber}", caseNumber);
 		url = url.replace("{commentID}", commentID);
 		String fullUrl = connectionManager.getConfig().getUrl() + url;
-		return get(connectionManager.getConnection(), fullUrl, Comment.class);
+		return get(connectionManager.getConnection(), fullUrl, CommentType.class);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class Comments extends BaseQuery {
 	 *             An exception if there was a connection related issue.
 	 * @throws MalformedURLException
 	 */
-	public List<Comment> list(String caseNumber, String startDate,
+	public List<CommentType> list(String caseNumber, String startDate,
 			String endDate, String[] kwargs) throws RequestException,
 			MalformedURLException {
 
@@ -85,9 +85,9 @@ public class Comments extends BaseQuery {
 		}
 		String fullUrl = QueryBuilder.appendQuery(connectionManager.getConfig()
 				.getUrl() + url, queryParams);
-		com.redhat.gss.redhat_support_lib.parsers.Comments comments = get(
+		com.redhat.gss.redhat_support_lib.parsers.CommentsType comments = get(
 				connectionManager.getConnection(), fullUrl,
-				com.redhat.gss.redhat_support_lib.parsers.Comments.class);
+				com.redhat.gss.redhat_support_lib.parsers.CommentsType.class);
 		return comments.getComment();
 	}
 
@@ -101,7 +101,7 @@ public class Comments extends BaseQuery {
 	 *             An exception if there was a connection, file open, etc.
 	 *             issue.
 	 */
-	public Comment add(Comment comment) throws Exception {
+	public CommentType add(CommentType comment) throws Exception {
 
 		String url = "/rs/cases/{caseNumber}/comments";
 		url = url.replace("{caseNumber}", comment.getCaseNumber());
@@ -118,7 +118,7 @@ public class Comments extends BaseQuery {
 			throw new Exception();
 		}
 		String path = caseurl.getPath();
-		comment.setCaseNumber(path.substring(path.lastIndexOf('/') + 1,
+		comment.setId(path.substring(path.lastIndexOf('/') + 1,
 				path.length()));
 		comment.setViewUri(caseurl.toString());
 		return comment;
