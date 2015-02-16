@@ -23,7 +23,7 @@ public class ConfigHelper {
 	int maxConnections = 50;
 	long ftpFileSize = 900000000L;
 	String ftpDir = "/incoming";
-	String userAgent = "";
+	String userAgent = "redhat-support-lib-java";
     Map<String, Cookie> cookies = null;
 
 	public ConfigHelper(String username, String password, String url,
