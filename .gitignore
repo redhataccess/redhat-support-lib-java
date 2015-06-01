@@ -4,3 +4,4 @@ src/test/java/rhsl.config
 .classpath
 .DS_Store
 .settings/
+/bin/
