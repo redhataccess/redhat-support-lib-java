@@ -157,43 +157,18 @@ public class BaseQuery {
 			mdo.addFormData("description", description, MediaType.APPLICATION_XML_TYPE);
 		}
 		mdo.addFormData("file", file, MediaType.APPLICATION_OCTET_STREAM_TYPE, file.getName());
-//		mdo.addPart(new FileInputStream(new File("/Users/Spense/Desktop/scsiErrorMessages/test.txt")), MediaType.APPLICATION_OCTET_STREAM_TYPE, "file");
 		GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(
 				mdo) {
 		};
-
-	    //Response r = target.request().post( Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
-		
-		byte[] encodedString = null;
-		//if (password != null && !password.isEmpty()) {
-			String tmp = "sshumake" + ":" + "redhat1";
-			encodedString = Base64.encodeBase64(tmp.getBytes());
-		//} else {
-			//encodedString = Base64.encodeBase64(username.getBytes());
-		//}
-//		requestContext.getHeaders().add("Proxy-Connection", "Keep-Alive");
-	//requestContext.getHeaders().add("Proxy-authorization", "Basic " + encodedString);
 		
 		javax.ws.rs.client.Invocation.Builder builder = client
 				.target(uri)
-				.request(MediaType.APPLICATION_XML).header("Authorization", "Basic " + encodedString.toString());
+				.request(MediaType.APPLICATION_XML);
 		if(description != null){
 			builder.header("description", description);
-			//builder.header("Content-Type", "multipart/form-data; boundary=--64f32fd8-b239-4a1e-a580-6ed5976f8a82");
 		}
 		Response response = builder.post(Entity.entity(entity, MediaType.MULTIPART_FORM_DATA_TYPE));
 
-		// FormDataMultiPart part = new FormDataMultiPart();
-		// if (description != null) {
-		// part.bodyPart(new FormDataBodyPart("description", description));
-		// }
-		// part.bodyPart(new FileDataBodyPart("file", file,
-		// MediaType.APPLICATION_OCTET_STREAM_TYPE));
-		// Response response = (Response)
-		// target.request(MediaType.APPLICATION_XML)
-		// .type(Boundary.addBoundary(MediaType.MULTIPART_FORM_DATA_TYPE))
-		// .header("description", description)
-		// .post(Response.class, part);
 		if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
 			LOGGER.debug("Failed : HTTP error code : "
 					+ response.getStatusInfo().getStatusCode() + " - "
