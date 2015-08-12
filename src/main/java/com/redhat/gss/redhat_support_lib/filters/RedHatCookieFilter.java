@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * User: akovari
- * Date: 7/23/14
- * Time: 12:09 PM
+ * User: akovari Date: 7/23/14 Time: 12:09 PM
  */
 public class RedHatCookieFilter implements ClientRequestFilter {
     Map<String, Cookie> cookies;
@@ -20,10 +18,11 @@ public class RedHatCookieFilter implements ClientRequestFilter {
         this.cookies = cookies;
     }
 
-    public void filter(ClientRequestContext clientRequestContext) throws IOException {
-    	if(this.cookies != null){
-    		List<Object> cookies = new ArrayList<Object>(this.cookies.values());
-        	clientRequestContext.getHeaders().put("Cookie", cookies);
-    	}
+    public void filter(ClientRequestContext clientRequestContext)
+            throws IOException {
+        if (this.cookies != null) {
+            List<Object> cookies = new ArrayList<Object>(this.cookies.values());
+            clientRequestContext.getHeaders().put("Cookie", cookies);
+        }
     }
 }

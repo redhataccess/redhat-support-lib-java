@@ -7,62 +7,63 @@ import java.util.Map;
 import java.util.Properties;
 
 public class ConfigHelper {
-	String username = null;
-	char[] password = null;
-	String url = "https://api.access.redhat.com";
-	int proxyPort = -1;
-	URL proxyUrl = null;
-	String proxyUser = null;
-	String proxyPassword = null;
-	String ftpHost = "dropbox.redhat.com";
-	int ftpPort = 21;
-	String ftpUsername = null;
-	String ftpPassword = null;
-	boolean devel = false;
-	int timeout = 500000;
-	int maxConnections = 50;
-	long ftpFileSize = 900000000L;
-	String ftpDir = "/incoming";
-	String userAgent = "redhat-support-lib-java";
+    String username = null;
+    char[] password = null;
+    String url = "https://api.access.redhat.com";
+    int proxyPort = -1;
+    URL proxyUrl = null;
+    String proxyUser = null;
+    String proxyPassword = null;
+    String ftpHost = "dropbox.redhat.com";
+    int ftpPort = 21;
+    String ftpUsername = null;
+    String ftpPassword = null;
+    boolean devel = false;
+    int timeout = 500000;
+    int maxConnections = 50;
+    long ftpFileSize = 2000000L;
+    String ftpDir = "/incoming";
+    String userAgent = "redhat-support-lib-java";
     Map<String, Cookie> cookies = null;
 
-	public ConfigHelper(String username, String password, String url,
-			String proxyUser, String proxyPassword, URL proxyUrl,
-			int proxyPort, String userAgent, boolean devel) {
-		this.username = username;
-		this.password = password.toCharArray();
-		if (url != null) {
-			this.url = url;
+    public ConfigHelper(String username, String password, String url,
+            String proxyUser, String proxyPassword, URL proxyUrl,
+            int proxyPort, String userAgent, boolean devel) {
+        this.username = username;
+        this.password = password.toCharArray();
+        if (url != null) {
+            this.url = url;
 
-		}
-		this.proxyUser = proxyUser;
-		this.proxyPassword = proxyPassword;
-		this.proxyUrl = proxyUrl;
-		this.proxyPort = proxyPort;
-		this.devel = devel;
-		this.userAgent = userAgent;
-	}
-	
-	public ConfigHelper(String username, String password, String url,
-			String proxyUser, String proxyPassword, URL proxyUrl,
-			int proxyPort, String userAgent, int timeout, boolean devel) {
-		this.username = username;
-		this.password = password.toCharArray();
-		if (url != null) {
-			this.url = url;
+        }
+        this.proxyUser = proxyUser;
+        this.proxyPassword = proxyPassword;
+        this.proxyUrl = proxyUrl;
+        this.proxyPort = proxyPort;
+        this.devel = devel;
+        this.userAgent = userAgent;
+    }
 
-		}
-		this.proxyUser = proxyUser;
-		this.proxyPassword = proxyPassword;
-		this.proxyUrl = proxyUrl;
-		this.proxyPort = proxyPort;
-		this.devel = devel;
-		this.userAgent = userAgent;
-		this.timeout = timeout;
-	}
+    public ConfigHelper(String username, String password, String url,
+            String proxyUser, String proxyPassword, URL proxyUrl,
+            int proxyPort, String userAgent, int timeout, boolean devel) {
+        this.username = username;
+        this.password = password.toCharArray();
+        if (url != null) {
+            this.url = url;
 
-    public ConfigHelper(String url, String proxyUser, String proxyPassword, URL proxyUrl,
-                        int proxyPort, String userAgent, Map<String, Cookie> cookies, boolean devel) {
+        }
+        this.proxyUser = proxyUser;
+        this.proxyPassword = proxyPassword;
+        this.proxyUrl = proxyUrl;
+        this.proxyPort = proxyPort;
+        this.devel = devel;
+        this.userAgent = userAgent;
+        this.timeout = timeout;
+    }
+
+    public ConfigHelper(String url, String proxyUser, String proxyPassword,
+            URL proxyUrl, int proxyPort, String userAgent,
+            Map<String, Cookie> cookies, boolean devel) {
         if (url != null) {
             this.url = url;
 
@@ -77,193 +78,194 @@ public class ConfigHelper {
     }
 
     public ConfigHelper(String username, String password, String url,
-			String proxyUser, String proxyPassword, URL proxyUrl,
-			int proxyPort, String ftpHost, int ftpPort, String ftpUsername,
-			String ftpPassword, boolean devel) {
-		this.username = username;
-		this.password = password.toCharArray();
-		if (url != null) {
-			this.url = url;
+            String proxyUser, String proxyPassword, URL proxyUrl,
+            int proxyPort, String ftpHost, int ftpPort, String ftpUsername,
+            String ftpPassword, boolean devel) {
+        this.username = username;
+        this.password = password.toCharArray();
+        if (url != null) {
+            this.url = url;
 
-		}
-		this.proxyUser = proxyUser;
-		this.proxyPassword = proxyPassword;
-		this.proxyUrl = proxyUrl;
-		this.proxyPort = proxyPort;
-		this.ftpHost = ftpHost;
-		this.ftpPort = ftpPort;
-		this.ftpUsername = ftpUsername;
-		this.ftpPassword = ftpPassword;
-		this.devel = devel;
-	}
+        }
+        this.proxyUser = proxyUser;
+        this.proxyPassword = proxyPassword;
+        this.proxyUrl = proxyUrl;
+        this.proxyPort = proxyPort;
+        this.ftpHost = ftpHost;
+        this.ftpPort = ftpPort;
+        this.ftpUsername = ftpUsername;
+        this.ftpPassword = ftpPassword;
+        this.devel = devel;
+    }
 
-	public ConfigHelper(String configFileName) throws IOException{
-		Properties props = ParseHelper.parseConfigFile(configFileName);
-		this.username = props.getProperty("username");
-		this.password = props.getProperty("password").toCharArray();
-		if (props.getProperty("url") != null) {
-			this.url = props.getProperty("url");
+    public ConfigHelper(String configFileName) throws IOException {
+        Properties props = ParseHelper.parseConfigFile(configFileName);
+        this.username = props.getProperty("username");
+        this.password = props.getProperty("password").toCharArray();
+        if (props.getProperty("url") != null) {
+            this.url = props.getProperty("url");
 
-		}
-		this.proxyUser = props.getProperty("proxyUser");
-		this.proxyPassword = props.getProperty("proxyPassword");
-		if(props.getProperty("proxyUrl") != null){
-			this.proxyUrl = new URL(props.getProperty("proxyUrl"));
-		}
-		if(props.getProperty("proxyPort") != null){
-			this.proxyPort = Integer.valueOf(props.getProperty("proxyPort"));
-		}
-		if(props.getProperty("ftpHost") != null){
-			this.ftpHost = props.getProperty("ftpHost");
-		}
-		if(props.getProperty("ftpPort") != null){
-			this.ftpPort = Integer.valueOf(props.getProperty("ftpPort"));
-		}
-		if(props.getProperty("ftpUsername") != null){
-			this.ftpUsername = props.getProperty("ftpUsername");
-		}
-		if(props.getProperty("ftpPassword") != null){
-			this.ftpPassword = props.getProperty("ftpPassword");
-		}
-		if(props.getProperty("devel") != null){
-			this.devel = Boolean.parseBoolean(props.getProperty("devel"));
-		}
-	}
-	public String getUsername() {
-		return username;
-	}
+        }
+        this.proxyUser = props.getProperty("proxyUser");
+        this.proxyPassword = props.getProperty("proxyPassword");
+        if (props.getProperty("proxyUrl") != null) {
+            this.proxyUrl = new URL(props.getProperty("proxyUrl"));
+        }
+        if (props.getProperty("proxyPort") != null) {
+            this.proxyPort = Integer.valueOf(props.getProperty("proxyPort"));
+        }
+        if (props.getProperty("ftpHost") != null) {
+            this.ftpHost = props.getProperty("ftpHost");
+        }
+        if (props.getProperty("ftpPort") != null) {
+            this.ftpPort = Integer.valueOf(props.getProperty("ftpPort"));
+        }
+        if (props.getProperty("ftpUsername") != null) {
+            this.ftpUsername = props.getProperty("ftpUsername");
+        }
+        if (props.getProperty("ftpPassword") != null) {
+            this.ftpPassword = props.getProperty("ftpPassword");
+        }
+        if (props.getProperty("devel") != null) {
+            this.devel = Boolean.parseBoolean(props.getProperty("devel"));
+        }
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return new String(password);
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password.toCharArray();
-	}
+    public String getPassword() {
+        return new String(password);
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public void setPassword(String password) {
+        this.password = password.toCharArray();
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public int getTimeout() {
-		return timeout;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
+    public int getTimeout() {
+        return timeout;
+    }
 
-	public int getMaxConnections() {
-		return maxConnections;
-	}
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
 
-	public void setMaxConnections(int maxConnections) {
-		this.maxConnections = maxConnections;
-	}
+    public int getMaxConnections() {
+        return maxConnections;
+    }
 
-	public int getProxyPort() {
-		return proxyPort;
-	}
+    public void setMaxConnections(int maxConnections) {
+        this.maxConnections = maxConnections;
+    }
 
-	public void setProxyPort(int proxyPort) {
-		this.proxyPort = proxyPort;
-	}
+    public int getProxyPort() {
+        return proxyPort;
+    }
 
-	public URL getProxyUrl() {
-		return proxyUrl;
-	}
+    public void setProxyPort(int proxyPort) {
+        this.proxyPort = proxyPort;
+    }
 
-	public void setProxyUrl(URL proxyUrl) {
-		this.proxyUrl = proxyUrl;
-	}
+    public URL getProxyUrl() {
+        return proxyUrl;
+    }
 
-	public String getProxyUser() {
-		return proxyUser;
-	}
+    public void setProxyUrl(URL proxyUrl) {
+        this.proxyUrl = proxyUrl;
+    }
 
-	public void setProxyUser(String proxyUser) {
-		this.proxyUser = proxyUser;
-	}
+    public String getProxyUser() {
+        return proxyUser;
+    }
 
-	public String getProxyPassword() {
-		return proxyPassword;
-	}
+    public void setProxyUser(String proxyUser) {
+        this.proxyUser = proxyUser;
+    }
 
-	public void setProxyPassword(String proxyPassword) {
-		this.proxyPassword = proxyPassword;
-	}
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
 
-	public String getFtpHost() {
-		return ftpHost;
-	}
+    public void setProxyPassword(String proxyPassword) {
+        this.proxyPassword = proxyPassword;
+    }
 
-	public void setFtpHost(String ftpHost) {
-		this.ftpHost = ftpHost;
-	}
+    public String getFtpHost() {
+        return ftpHost;
+    }
 
-	public int getFtpPort() {
-		return ftpPort;
-	}
+    public void setFtpHost(String ftpHost) {
+        this.ftpHost = ftpHost;
+    }
 
-	public void setFtpPort(int ftpPort) {
-		this.ftpPort = ftpPort;
-	}
+    public int getFtpPort() {
+        return ftpPort;
+    }
 
-	public String getFtpUsername() {
-		return ftpUsername;
-	}
+    public void setFtpPort(int ftpPort) {
+        this.ftpPort = ftpPort;
+    }
 
-	public void setFtpUsername(String ftpUsername) {
-		this.ftpUsername = ftpUsername;
-	}
+    public String getFtpUsername() {
+        return ftpUsername;
+    }
 
-	public String getFtpPassword() {
-		return ftpPassword;
-	}
+    public void setFtpUsername(String ftpUsername) {
+        this.ftpUsername = ftpUsername;
+    }
 
-	public void setFtpPassword(String ftpPassword) {
-		this.ftpPassword = ftpPassword;
-	}
+    public String getFtpPassword() {
+        return ftpPassword;
+    }
 
-	public boolean isDevel() {
-		return devel;
-	}
+    public void setFtpPassword(String ftpPassword) {
+        this.ftpPassword = ftpPassword;
+    }
 
-	public void setDevel(boolean devel) {
-		this.devel = devel;
-	}
+    public boolean isDevel() {
+        return devel;
+    }
 
-	public long getFtpFileSize() {
-		return ftpFileSize;
-	}
+    public void setDevel(boolean devel) {
+        this.devel = devel;
+    }
 
-	public void setFtpFileSize(long ftpFileSize) {
-		this.ftpFileSize = ftpFileSize;
-	}
+    public long getFtpFileSize() {
+        return ftpFileSize;
+    }
 
-	public String getFtpDir() {
-		return ftpDir;
-	}
+    public void setFtpFileSize(long ftpFileSize) {
+        this.ftpFileSize = ftpFileSize;
+    }
 
-	public void setFtpDir(String ftpDir) {
-		this.ftpDir = ftpDir;
-	}
+    public String getFtpDir() {
+        return ftpDir;
+    }
 
-	public String getUserAgent() {
-		return userAgent;
-	}
+    public void setFtpDir(String ftpDir) {
+        this.ftpDir = ftpDir;
+    }
 
-	public void setUserAgent(String userAgent) {
-		this.userAgent = userAgent;
-	}
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
 
     public Map<String, Cookie> getCookies() {
         return cookies;

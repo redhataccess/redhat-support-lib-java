@@ -8,32 +8,35 @@ import org.jboss.logging.Logger;
 
 public class QueryBuilder {
 
-	private final static Logger LOGGER = Logger.getLogger(QueryBuilder.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(QueryBuilder.class
+            .getName());
+
     public static String appendQuery(String url, List<String> qargs) {
-        //Appends url params to url
+        // Appends url params to url
 
         String query_params = new String();
 
-        if (qargs != null && qargs.size() > 0){
-            for(String qarg: qargs){
-            	String[] splitArg = qarg.split("=");
-                if (splitArg != null && splitArg.length == 2){
-                	if (!query_params.contains("?")){
-						try {
-							query_params += "?" + splitArg[0] + "=" + URLEncoder.encode(splitArg[1], "UTF-8");
-						} catch (UnsupportedEncodingException e) {
-							LOGGER.warn(e.getMessage());
-						}
-						//query_params += '?' + arg;
-					}
-					else{
-					    try {
-							query_params += "&" + splitArg[0] + "=" + URLEncoder.encode(splitArg[1], "UTF-8");
-						} catch (UnsupportedEncodingException e) {
-							LOGGER.warn(e.getMessage());
-						}
-					    //query_params += '&' + arg;
-					}
+        if (qargs != null && qargs.size() > 0) {
+            for (String qarg : qargs) {
+                String[] splitArg = qarg.split("=");
+                if (splitArg != null && splitArg.length == 2) {
+                    if (!query_params.contains("?")) {
+                        try {
+                            query_params += "?" + splitArg[0] + "="
+                                    + URLEncoder.encode(splitArg[1], "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            LOGGER.warn(e.getMessage());
+                        }
+                        // query_params += '?' + arg;
+                    } else {
+                        try {
+                            query_params += "&" + splitArg[0] + "="
+                                    + URLEncoder.encode(splitArg[1], "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            LOGGER.warn(e.getMessage());
+                        }
+                        // query_params += '&' + arg;
+                    }
                 }
             }
         }

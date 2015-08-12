@@ -13,9 +13,7 @@ import javax.net.ssl.X509TrustManager;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 
-
 public class ConfiglessCustomHttpEngine extends ApacheHttpClient4Engine {
-
 
     public ConfiglessCustomHttpEngine() {
         super();
@@ -31,7 +29,7 @@ public class ConfiglessCustomHttpEngine extends ApacheHttpClient4Engine {
         this.httpClient = client.build();
     }
 
-    public static TrustManager[] gullibleManagers = new TrustManager[]{new X509TrustManager() {
+    public static TrustManager[] gullibleManagers = new TrustManager[] { new X509TrustManager() {
 
         public void checkClientTrusted(X509Certificate[] arg0, String arg1)
                 throws CertificateException {
@@ -44,7 +42,7 @@ public class ConfiglessCustomHttpEngine extends ApacheHttpClient4Engine {
         public X509Certificate[] getAcceptedIssuers() {
             return null;
         }
-    }};
+    } };
 
     public static SSLContext createGullibleSslContext()
             throws NoSuchAlgorithmException, KeyManagementException {
@@ -53,4 +51,3 @@ public class ConfiglessCustomHttpEngine extends ApacheHttpClient4Engine {
         return ctx;
     }
 }
-

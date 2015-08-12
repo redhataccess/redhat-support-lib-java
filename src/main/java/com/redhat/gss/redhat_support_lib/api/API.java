@@ -17,155 +17,55 @@ import com.redhat.gss.redhat_support_lib.infrastructure.Search;
 import com.redhat.gss.redhat_support_lib.infrastructure.Solutions;
 import com.redhat.gss.redhat_support_lib.infrastructure.Groups;
 import com.redhat.gss.redhat_support_lib.infrastructure.Symptoms;
+import com.redhat.gss.redhat_support_lib.infrastructure.Insights;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 import javax.ws.rs.core.Cookie;
 
 public class API {
-	ConfigHelper config = null;
-	ConnectionManager connectionManager = null;
+    ConfigHelper config = null;
+    ConnectionManager connectionManager = null;
 
-	Search search = null;
-	Solutions solutions = null;
-	Articles articles = null;
-	Cases cases = null;
-	Products products = null;
-	Comments comments = null;
-	Entitlements entitlements = null;
-	Problems problems = null;
-	Attachments attachments = null;
-	Ping ping = null;
-	Groups groups = null;
-	Symptoms symptoms = null;
+    Search search = null;
+    Solutions solutions = null;
+    Articles articles = null;
+    Cases cases = null;
+    Products products = null;
+    Comments comments = null;
+    Entitlements entitlements = null;
+    Problems problems = null;
+    Attachments attachments = null;
+    Ping ping = null;
+    Groups groups = null;
+    Symptoms symptoms = null;
+    Insights insights = null;
 
-	/**
-	 * @param username
-	 *            Strata username
-	 * @param password
-	 *            Strata password
-	 * @param url
-	 *            URL for Strata, default is https://api.access.redhat.com
-	 * @param proxyUser
-	 *            Proxy server username
-	 * @param proxyPassword
-	 *            Proxy server password
-	 * @param proxyUrl
-	 *            URL for proxy server
-	 * @param proxyPort
-	 *            Proxy server port
-	 * @param userAgent
-	 *            User agent string
-	 */
-	public API(String username, String password, String url, String proxyUser,
-			String proxyPassword, URL proxyUrl, int proxyPort, String userAgent) {
-		config = new ConfigHelper(username, password, url, proxyUser,
-				proxyPassword, proxyUrl, proxyPort, userAgent, false);
-		connectionManager = new ConnectionManager(config);
-
-		search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
-		articles = new Articles(connectionManager);
-		cases = new Cases(connectionManager);
-		products = new Products(connectionManager);
-		comments = new Comments(connectionManager);
-		entitlements = new Entitlements(connectionManager);
-		problems = new Problems(connectionManager);
-		attachments = new Attachments(connectionManager);
-		ping = new Ping(connectionManager);
-		groups = new Groups(connectionManager);
-		symptoms = new Symptoms(connectionManager);
-	}
-
-	/**
-	 * @param username
-	 *            Strata username
-	 * @param password
-	 *            Strata password
-	 * @param url
-	 *            URL for Strata, default is https://api.access.redhat.com
-	 * @param proxyUser
-	 *            Proxy server username
-	 * @param proxyPassword
-	 *            Proxy server password
-	 * @param proxyUrl
-	 *            URL for proxy server
-	 * @param proxyPort
-	 *            Proxy server port
-	 * @param userAgent
-	 *            User agent string
-	 * @param isDevel
-	 *            Only true if debugging for development
-	 */
-	public API(String username, String password, String url, String proxyUser,
-			String proxyPassword, URL proxyUrl, int proxyPort, String userAgent, boolean isDevel) {
-		config = new ConfigHelper(username, password, url, proxyUser,
-				proxyPassword, proxyUrl, proxyPort, userAgent, isDevel);
-		connectionManager = new ConnectionManager(config);
-
-		search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
-		articles = new Articles(connectionManager);
-		cases = new Cases(connectionManager);
-		products = new Products(connectionManager);
-		comments = new Comments(connectionManager);
-		entitlements = new Entitlements(connectionManager);
-		problems = new Problems(connectionManager);
-		attachments = new Attachments(connectionManager);
-		ping = new Ping(connectionManager);
-		groups = new Groups(connectionManager);
-		symptoms = new Symptoms(connectionManager);
-	}
-	
-	/**
-	 * @param username
-	 *            Strata username
-	 * @param password
-	 *            Strata password
-	 * @param url
-	 *            URL for Strata, default is https://api.access.redhat.com
-	 * @param proxyUser
-	 *            Proxy server username
-	 * @param proxyPassword
-	 *            Proxy server password
-	 * @param proxyUrl
-	 *            URL for proxy server
-	 * @param proxyPort
-	 *            Proxy server port
-	 * @param userAgent
-	 *            User agent string
-	 * @param connectionTimeout
-	 *            Connection Timeout
-	 * @param isDevel
-	 *            Only true if debugging for development
-	 */
-	public API(String username, String password, String url, String proxyUser,
-			String proxyPassword, URL proxyUrl, int proxyPort, String userAgent, int connectionTimeout, boolean isDevel) {
-		config = new ConfigHelper(username, password, url, proxyUser,
-				proxyPassword, proxyUrl, proxyPort, userAgent, connectionTimeout, isDevel);
-		connectionManager = new ConnectionManager(config);
-
-		search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
-		articles = new Articles(connectionManager);
-		cases = new Cases(connectionManager);
-		products = new Products(connectionManager);
-		comments = new Comments(connectionManager);
-		entitlements = new Entitlements(connectionManager);
-		problems = new Problems(connectionManager);
-		attachments = new Attachments(connectionManager);
-		ping = new Ping(connectionManager);
-		groups = new Groups(connectionManager);
-		symptoms = new Symptoms(connectionManager);
-	}
-
-    public API(String url, String proxyUser,
-               String proxyPassword, URL proxyUrl, int proxyPort, String userAgent, Map<String, Cookie> cookies, boolean isDevel) {
-        config = new ConfigHelper(url, proxyUser,
-                proxyPassword, proxyUrl, proxyPort, userAgent, cookies, isDevel);
+    /**
+     * @param username
+     *            Strata username
+     * @param password
+     *            Strata password
+     * @param url
+     *            URL for Strata, default is https://api.access.redhat.com
+     * @param proxyUser
+     *            Proxy server username
+     * @param proxyPassword
+     *            Proxy server password
+     * @param proxyUrl
+     *            URL for proxy server
+     * @param proxyPort
+     *            Proxy server port
+     * @param userAgent
+     *            User agent string
+     */
+    public API(String username, String password, String url, String proxyUser,
+            String proxyPassword, URL proxyUrl, int proxyPort, String userAgent) {
+        config = new ConfigHelper(username, password, url, proxyUser,
+                proxyPassword, proxyUrl, proxyPort, userAgent, false);
         connectionManager = new ConnectionManager(config);
 
         search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
+        solutions = new Solutions(connectionManager);
         articles = new Articles(connectionManager);
         cases = new Cases(connectionManager);
         products = new Products(connectionManager);
@@ -176,98 +76,214 @@ public class API {
         ping = new Ping(connectionManager);
         groups = new Groups(connectionManager);
         symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
+    }
+
+    /**
+     * @param username
+     *            Strata username
+     * @param password
+     *            Strata password
+     * @param url
+     *            URL for Strata, default is https://api.access.redhat.com
+     * @param proxyUser
+     *            Proxy server username
+     * @param proxyPassword
+     *            Proxy server password
+     * @param proxyUrl
+     *            URL for proxy server
+     * @param proxyPort
+     *            Proxy server port
+     * @param userAgent
+     *            User agent string
+     * @param isDevel
+     *            Only true if debugging for development
+     */
+    public API(String username, String password, String url, String proxyUser,
+            String proxyPassword, URL proxyUrl, int proxyPort,
+            String userAgent, boolean isDevel) {
+        config = new ConfigHelper(username, password, url, proxyUser,
+                proxyPassword, proxyUrl, proxyPort, userAgent, isDevel);
+        connectionManager = new ConnectionManager(config);
+
+        search = new Search(connectionManager);
+        solutions = new Solutions(connectionManager);
+        articles = new Articles(connectionManager);
+        cases = new Cases(connectionManager);
+        products = new Products(connectionManager);
+        comments = new Comments(connectionManager);
+        entitlements = new Entitlements(connectionManager);
+        problems = new Problems(connectionManager);
+        attachments = new Attachments(connectionManager);
+        ping = new Ping(connectionManager);
+        groups = new Groups(connectionManager);
+        symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
+    }
+
+    /**
+     * @param username
+     *            Strata username
+     * @param password
+     *            Strata password
+     * @param url
+     *            URL for Strata, default is https://api.access.redhat.com
+     * @param proxyUser
+     *            Proxy server username
+     * @param proxyPassword
+     *            Proxy server password
+     * @param proxyUrl
+     *            URL for proxy server
+     * @param proxyPort
+     *            Proxy server port
+     * @param userAgent
+     *            User agent string
+     * @param connectionTimeout
+     *            Connection Timeout
+     * @param isDevel
+     *            Only true if debugging for development
+     */
+    public API(String username, String password, String url, String proxyUser,
+            String proxyPassword, URL proxyUrl, int proxyPort,
+            String userAgent, int connectionTimeout, boolean isDevel) {
+        config = new ConfigHelper(username, password, url, proxyUser,
+                proxyPassword, proxyUrl, proxyPort, userAgent,
+                connectionTimeout, isDevel);
+        connectionManager = new ConnectionManager(config);
+
+        search = new Search(connectionManager);
+        solutions = new Solutions(connectionManager);
+        articles = new Articles(connectionManager);
+        cases = new Cases(connectionManager);
+        products = new Products(connectionManager);
+        comments = new Comments(connectionManager);
+        entitlements = new Entitlements(connectionManager);
+        problems = new Problems(connectionManager);
+        attachments = new Attachments(connectionManager);
+        ping = new Ping(connectionManager);
+        groups = new Groups(connectionManager);
+        symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
+    }
+
+    public API(String url, String proxyUser, String proxyPassword,
+            URL proxyUrl, int proxyPort, String userAgent,
+            Map<String, Cookie> cookies, boolean isDevel) {
+        config = new ConfigHelper(url, proxyUser, proxyPassword, proxyUrl,
+                proxyPort, userAgent, cookies, isDevel);
+        connectionManager = new ConnectionManager(config);
+
+        search = new Search(connectionManager);
+        solutions = new Solutions(connectionManager);
+        articles = new Articles(connectionManager);
+        cases = new Cases(connectionManager);
+        products = new Products(connectionManager);
+        comments = new Comments(connectionManager);
+        entitlements = new Entitlements(connectionManager);
+        problems = new Problems(connectionManager);
+        attachments = new Attachments(connectionManager);
+        ping = new Ping(connectionManager);
+        groups = new Groups(connectionManager);
+        symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
     }
 
     public API(String username, String password, String url,
-			String proxyUsername, String proxyPassword, URL hostUrl,
-			int proxyPort, String ftpHost, int ftpPort, String ftpUsername,
-			String ftpPassword, boolean devel) {
-		config = new ConfigHelper(username, password, url, proxyUsername,
-				proxyPassword, hostUrl, proxyPort, ftpHost, ftpPort,
-				ftpUsername, ftpPassword, devel);
-		connectionManager = new ConnectionManager(config);
+            String proxyUsername, String proxyPassword, URL hostUrl,
+            int proxyPort, String ftpHost, int ftpPort, String ftpUsername,
+            String ftpPassword, boolean devel) {
+        config = new ConfigHelper(username, password, url, proxyUsername,
+                proxyPassword, hostUrl, proxyPort, ftpHost, ftpPort,
+                ftpUsername, ftpPassword, devel);
+        connectionManager = new ConnectionManager(config);
 
-		search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
-		articles = new Articles(connectionManager);
-		cases = new Cases(connectionManager);
-		products = new Products(connectionManager);
-		comments = new Comments(connectionManager);
-		entitlements = new Entitlements(connectionManager);
-		problems = new Problems(connectionManager);
-		attachments = new Attachments(connectionManager);
-		ping = new Ping(connectionManager);
-		groups = new Groups(connectionManager);
-		symptoms = new Symptoms(connectionManager);
-	}
+        search = new Search(connectionManager);
+        solutions = new Solutions(connectionManager);
+        articles = new Articles(connectionManager);
+        cases = new Cases(connectionManager);
+        products = new Products(connectionManager);
+        comments = new Comments(connectionManager);
+        entitlements = new Entitlements(connectionManager);
+        problems = new Problems(connectionManager);
+        attachments = new Attachments(connectionManager);
+        ping = new Ping(connectionManager);
+        groups = new Groups(connectionManager);
+        symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
+    }
 
-	public API(String configFileName) throws IOException {
-		config = new ConfigHelper(configFileName);
-		connectionManager = new ConnectionManager(config);
+    public API(String configFileName) throws IOException {
+        config = new ConfigHelper(configFileName);
+        connectionManager = new ConnectionManager(config);
 
-		search = new Search(connectionManager);
-		solutions = new Solutions(connectionManager);
-		articles = new Articles(connectionManager);
-		cases = new Cases(connectionManager);
-		products = new Products(connectionManager);
-		comments = new Comments(connectionManager);
-		entitlements = new Entitlements(connectionManager);
-		problems = new Problems(connectionManager);
-		attachments = new Attachments(connectionManager);
-		ping = new Ping(connectionManager);
-		groups = new Groups(connectionManager);
-		symptoms = new Symptoms(connectionManager);
-	}
+        search = new Search(connectionManager);
+        solutions = new Solutions(connectionManager);
+        articles = new Articles(connectionManager);
+        cases = new Cases(connectionManager);
+        products = new Products(connectionManager);
+        comments = new Comments(connectionManager);
+        entitlements = new Entitlements(connectionManager);
+        problems = new Problems(connectionManager);
+        attachments = new Attachments(connectionManager);
+        ping = new Ping(connectionManager);
+        groups = new Groups(connectionManager);
+        symptoms = new Symptoms(connectionManager);
+        insights = new Insights(connectionManager);
+    }
 
-	public Search getSearch() {
-		return search;
-	}
-	
-	public Solutions getSolutions() {
-		return solutions;
-	}
+    public Search getSearch() {
+        return search;
+    }
 
-	public Articles getArticles() {
-		return articles;
-	}
+    public Solutions getSolutions() {
+        return solutions;
+    }
 
-	public Cases getCases() {
-		return cases;
-	}
+    public Articles getArticles() {
+        return articles;
+    }
 
-	public Products getProducts() {
-		return products;
-	}
+    public Cases getCases() {
+        return cases;
+    }
 
-	public Comments getComments() {
-		return comments;
-	}
+    public Products getProducts() {
+        return products;
+    }
 
-	public Entitlements getEntitlements() {
-		return entitlements;
-	}
+    public Comments getComments() {
+        return comments;
+    }
 
-	public Problems getProblems() {
-		return problems;
-	}
+    public Entitlements getEntitlements() {
+        return entitlements;
+    }
 
-	public Attachments getAttachments() {
-		return attachments;
-	}
+    public Problems getProblems() {
+        return problems;
+    }
 
-	public ConfigHelper getConfigHelper() {
-		return config;
-	}
+    public Attachments getAttachments() {
+        return attachments;
+    }
 
-	public Ping getPing(){
-		return ping;
-	}
+    public ConfigHelper getConfigHelper() {
+        return config;
+    }
 
-	public Groups getGroups(){
-		return groups;
-	}
+    public Ping getPing() {
+        return ping;
+    }
 
-	public Symptoms getSymptoms(){
-		return symptoms;
-	}
+    public Groups getGroups() {
+        return groups;
+    }
+
+    public Symptoms getSymptoms() {
+        return symptoms;
+    }
+
+    public Insights getInsights() {
+        return insights;
+    }
 }
