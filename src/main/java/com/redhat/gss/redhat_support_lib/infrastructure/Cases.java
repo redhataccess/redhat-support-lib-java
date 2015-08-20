@@ -17,6 +17,7 @@ import com.redhat.gss.redhat_support_lib.parsers.ValueType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Cases extends BaseQuery {
+
     private ConnectionManager connectionManager = null;
     static String url = "/rs/cases/";
 
@@ -25,14 +26,11 @@ public class Cases extends BaseQuery {
     }
 
     /**
-     * Queries the API for the given case number. RESTful method:
-     * https://api.access.redhat.com/rs/cases/<caseNumber>
+     * Queries the API for the given case number. RESTful method: https://api.access.redhat.com/rs/cases/<caseNumber>
      *
-     * @param caseNum
-     *            The exact caseNumber you are interested in.
+     * @param caseNum The exact caseNumber you are interested in.
      * @return A case object that represents the given case number.
-     * @throws RequestException
-     *             An exception if there was a connection related issue.
+     * @throws RequestException An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
     public CaseType get(String caseNum) throws RequestException,
@@ -42,32 +40,22 @@ public class Cases extends BaseQuery {
     }
 
     /**
-     * Queries the cases RESTful interface with a given set of keywords. RESTful
-     * method: https://api.access.redhat.com/rs/cases?keyword=NFS
+     * Queries the cases RESTful interface with a given set of keywords. RESTful method:
+     * https://api.access.redhat.com/rs/cases?keyword=NFS
      *
-     * @param keywords
-     *            A string array of keywords to search on.
-     * @param includeClosed
-     *            Do not include closed cases.
-     * @param detail
-     *            Include additional details.
-     * @param group
-     *            See https://api.access.redhat.com/rs/groups
-     * @param startDate
-     *            Must be either: yyyy-MM-ddTHH:mm:ss or yyyy-MM-dd
-     * @param endDate
-     *            Must be either: yyyy-MM-ddTHH:mm:ss or yyyy-MM-dd
-     * @param kwargs
-     *            Additional properties to filter on. The RESTful interface can
-     *            only search on keywords; however, you can use this method to
-     *            post-filter the results returned. Simply supply a String array
-     *            of valid properties and their associated values.
+     * @param keywords A string array of keywords to search on.
+     * @param includeClosed Do not include closed cases.
+     * @param detail Include additional details.
+     * @param group See https://api.access.redhat.com/rs/groups
+     * @param startDate Must be either: yyyy-MM-ddTHH:mm:ss or yyyy-MM-dd
+     * @param endDate Must be either: yyyy-MM-ddTHH:mm:ss or yyyy-MM-dd
+     * @param kwargs Additional properties to filter on. The RESTful interface can only search on keywords; however, you
+     * can use this method to post-filter the results returned. Simply supply a String array of valid properties and
+     * their associated values.
      * @return A list of solution objects
-     * @throws RequestException
-     *             An exception if there was a connection related issue.
+     * @throws RequestException An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
-
     @SuppressWarnings("unchecked")
     public List<CaseType> list(String[] keywords, boolean includeClosed,
             boolean detail, String group, String startDate, String endDate,
@@ -141,55 +129,52 @@ public class Cases extends BaseQuery {
     /**
      * Add a new case
      *
-     * @param cas
-     *            The case to be added. Use InstanceMaker.makeCase to get a case
-     *            bean.
-     * @return The same case with the case number and view_uri set if
-     *         successful.
-     * @throws Exception
-     *             An exception if there was a connection related issue.
+     * @param cas The case to be added. Use InstanceMaker.makeCase to get a case bean.
+     * @return The same case with the case number and view_uri set if successful.
+     * @throws Exception An exception if there was a connection related issue.
      */
-    public CaseType add(CaseType cas) throws MalformedURLException,
-            RequestException {
-
-        String fullUrl = connectionManager.getConfig().getUrl() + url;
-        Response resp = add(connectionManager.getConnection(), fullUrl, cas);
-        MultivaluedMap<String, String> headers = resp.getStringHeaders();
-        URL caseurl = null;
-        caseurl = new URL(headers.getFirst("Location"));
-        String path = caseurl.getPath();
-        cas.setCaseNumber(path.substring(path.lastIndexOf('/') + 1,
-                path.length()));
-        cas.setViewUri(caseurl.toString());
-        return cas;
+    public CaseType add(CaseType cas) throws MalformedURLException, RequestException {
+        Response response = null;
+        try {
+            String fullUrl = connectionManager.getConfig().getUrl() + url;
+            response = add(connectionManager.getConnection(), fullUrl, cas);
+            MultivaluedMap<String, String> headers = response.getStringHeaders();
+            URL caseurl = null;
+            caseurl = new URL(headers.getFirst("Location"));
+            String path = caseurl.getPath();
+            cas.setCaseNumber(path.substring(path.lastIndexOf('/') + 1,
+                    path.length()));
+            cas.setViewUri(caseurl.toString());
+            return cas;
+        } finally {
+            safeClose(response);
+        }
     }
 
     /**
      * Update an existing case
      *
-     * @param cas
-     *            The case to be updated.
-     * @return The same case updated with the new case information if
-     *         successful.
-     * @throws RequestException
-     *             An exception if there was a connection related issue.
+     * @param cas The case to be updated.
+     * @return The same case updated with the new case information if successful.
+     * @throws RequestException An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
-    public CaseType update(CaseType cas) throws RequestException,
-            MalformedURLException {
-
-        String fullUrl = connectionManager.getConfig().getUrl() + url
-                + cas.getCaseNumber();
-        update(connectionManager.getConnection(), fullUrl, cas);
-        return cas;
+    public CaseType update(CaseType cas) throws RequestException, MalformedURLException {
+        String fullUrl = connectionManager.getConfig().getUrl() + url + cas.getCaseNumber();
+        Response response = null;
+        try {
+            response = update(connectionManager.getConnection(), fullUrl, cas);
+            return cas;
+        } finally {
+            safeClose(response);
+        }
     }
 
     /**
      * Get severities
      *
      * @return The list of severities.
-     * @throws RequestException
-     *             An exception if there was a connection related issue.
+     * @throws RequestException An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
     public List<ValueType> getSeverities() throws RequestException,

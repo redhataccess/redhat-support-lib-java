@@ -44,39 +44,51 @@ public class Insights {
         return response;
     }
 
-    public Response addSystem(String uri, String uuid, String hostname)
+    public void addSystem(String uri, String uuid, String hostname)
             throws RequestException, MalformedURLException {
         String url = new URL(new URL(connectionManager.getConfig().getUrl()),
                 uri).toString();
         Map<String, String> params = new HashMap<String, String>();
         params.put(MACHINE_ID, uuid);
         params.put(HOSTNAME, hostname);
-        Response response = (Response) connectionManager.getConnection()
-                .target(url).request().accept(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(params, MediaType.APPLICATION_JSON));
-        if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
-            throw new RequestException(response.getStatusInfo().getStatusCode()
-                    + " - " + response.getStatusInfo().getReasonPhrase());
+        Response response = null;
+        try {
+            response = connectionManager.getConnection()
+                    .target(url).request().accept(MediaType.APPLICATION_JSON)
+                    .post(Entity.entity(params, MediaType.APPLICATION_JSON));
+            if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
+                throw new RequestException(response.getStatusInfo().getStatusCode()
+                        + " - " + response.getStatusInfo().getReasonPhrase());
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-        return response;
     }
 
-    public Response updateSystem(String uri, String hostname)
+    public void updateSystem(String uri, String hostname)
             throws RequestException, MalformedURLException {
         Map<String, String> params = new HashMap<String, String>();
         params.put(HOSTNAME, hostname);
-        Response response = (Response) connectionManager.getConnection()
-                .target(new URL(new URL(connectionManager.getConfig().getUrl()),
-                        uri).toString()).request().accept(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(params, MediaType.APPLICATION_JSON));
-        if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
-            throw new RequestException(response.getStatusInfo().getStatusCode()
-                    + " - " + response.getStatusInfo().getReasonPhrase());
+        Response response = null;
+        try {
+            response = connectionManager.getConnection()
+                    .target(new URL(new URL(connectionManager.getConfig().getUrl()),
+                                    uri).toString()).request().accept(MediaType.APPLICATION_JSON)
+                    .put(Entity.entity(params, MediaType.APPLICATION_JSON));
+            if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
+                throw new RequestException(response.getStatusInfo().getStatusCode()
+                        + " - " + response.getStatusInfo().getReasonPhrase());
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-        return response;
     }
 
-    public Response upload(String uri, File file, String description)
+    public void upload(String uri, File file, String description)
             throws FileNotFoundException, ParseException, RequestException,
             MalformedURLException {
         MultipartFormDataOutput mdo = new MultipartFormDataOutput();
@@ -88,22 +100,28 @@ public class Insights {
                 file.getName());
         GenericEntity<MultipartFormDataOutput> entity = new GenericEntity<MultipartFormDataOutput>(
                 mdo) {
-        };
+                };
 
         javax.ws.rs.client.Invocation.Builder builder = connectionManager
                 .getConnection().target(new URL(new URL(connectionManager.getConfig().getUrl()),
-                        uri).toString())
+                                uri).toString())
                 .request(MediaType.APPLICATION_JSON);
         if (description != null) {
             builder.header("description", description);
         }
-        Response response = builder.post(Entity.entity(entity,
-                MediaType.MULTIPART_FORM_DATA_TYPE));
+        Response response = null;
+        try {
+            response = builder.post(Entity.entity(entity,
+                    MediaType.MULTIPART_FORM_DATA_TYPE));
 
-        if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
-            throw new RequestException(response.getStatusInfo().getStatusCode()
-                    + " - " + response.getStatusInfo().getReasonPhrase());
+            if (response.getStatus() >= HttpStatus.SC_BAD_REQUEST) {
+                throw new RequestException(response.getStatusInfo().getStatusCode()
+                        + " - " + response.getStatusInfo().getReasonPhrase());
+            }
+        } finally {
+            if (response != null) {
+                response.close();
+            }
         }
-        return response;
     }
 }
