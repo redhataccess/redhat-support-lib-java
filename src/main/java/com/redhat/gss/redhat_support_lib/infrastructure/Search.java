@@ -35,8 +35,7 @@ public class Search extends BaseQuery {
      *             An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
-    public List<SearchResultType> search(String[] keywords)
-            throws RequestException, MalformedURLException {
+    public List<SearchResultType> search(String[] keywords) throws RequestException, MalformedURLException {
         List<String> queryParams = new ArrayList<String>();
         for (String keyword : keywords) {
             queryParams.add("keyword=" + keyword);

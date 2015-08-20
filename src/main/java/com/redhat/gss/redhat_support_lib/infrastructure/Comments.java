@@ -104,13 +104,18 @@ public class Comments extends BaseQuery {
         url = url.replace("{caseNumber}", comment.getCaseNumber());
 
         String fullUrl = connectionManager.getConfig().getUrl() + url;
-        Response resp = add(connectionManager.getConnection(), fullUrl, comment);
-        MultivaluedMap<String, String> headers = resp.getStringHeaders();
-        URL caseurl = null;
-        caseurl = new URL(headers.getFirst("Location"));
-        String path = caseurl.getPath();
-        comment.setId(path.substring(path.lastIndexOf('/') + 1, path.length()));
-        comment.setViewUri(caseurl.toString());
-        return comment;
+        Response response = null;
+        try {
+            response = add(connectionManager.getConnection(), fullUrl, comment);
+            MultivaluedMap<String, String> headers = response.getStringHeaders();
+            URL caseurl = null;
+            caseurl = new URL(headers.getFirst("Location"));
+            String path = caseurl.getPath();
+            comment.setId(path.substring(path.lastIndexOf('/') + 1, path.length()));
+            comment.setViewUri(caseurl.toString());
+            return comment;
+        } finally {
+            safeClose(response);
+        }
     }
 }

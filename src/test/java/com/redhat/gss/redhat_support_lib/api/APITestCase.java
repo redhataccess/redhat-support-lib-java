@@ -19,10 +19,6 @@ import com.redhat.gss.redhat_support_lib.parsers.SearchResultType;
 import com.redhat.gss.redhat_support_lib.parsers.SolutionType;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import org.junit.BeforeClass;
 
 public class APITestCase {
@@ -59,7 +55,18 @@ public class APITestCase {
         assertEquals("546543", retrievedArticle.getId());
     }
 
-    
+    public ArticleType addArticle(String abstractTxt, String title) {
+        ArticleType art = new ArticleType();
+        art.setAbstract(abstractTxt);
+        art.setTitle(title);
+        try {
+            art = currentAPI.getArticles().add(art);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return art;
+    }
+
     @Test
     public void listArticleTest() throws MalformedURLException, RequestException {
         String[] args = {"keyword=NFS"};
@@ -136,8 +143,7 @@ public class APITestCase {
     public void listCommentsTest() throws Exception {
         CaseType cas = this.addCase();
         this.addComment(cas.getCaseNumber(), "Test Comment");
-        Instant yesterday = Instant.now().truncatedTo(ChronoUnit.DAYS).minus(Period.ofDays(1));
-        List<CommentType> comments = currentAPI.getComments().list(cas.getCaseNumber(), DateTimeFormatter.ISO_LOCAL_DATE.format(yesterday), null, null);
+        List<CommentType> comments = currentAPI.getComments().list(cas.getCaseNumber(), null, null, null);
         assertEquals(comments.size(), 1);
     }
 
@@ -194,14 +200,12 @@ public class APITestCase {
         assertEquals(currentAPI.getAttachments().list(cas.getCaseNumber(), null, null, null).size(), 0);
 
         currentAPI.getAttachments().add(cas.getCaseNumber(), true, getPath("test.txt"), "Test Attachment");
-
-        List<AttachmentType> attachments = currentAPI.getAttachments().list(cas.getCaseNumber(), null,
-                null, null);
+        List<AttachmentType> attachments = currentAPI.getAttachments().list(cas.getCaseNumber(), null, null, null);
         assertEquals(attachments.size(), 1);
     }
 
     @Test
-    public void AddAndDeleteAttachmentTest() throws Exception {
+    public void addAndDeleteAttachmentTest() throws Exception {
         CaseType cas = this.addCase();
 
         assertEquals(currentAPI.getAttachments().list(cas.getCaseNumber(), null, null, null).size(), 0);
@@ -209,9 +213,7 @@ public class APITestCase {
         String location = currentAPI.getAttachments().add(cas.getCaseNumber(), true, getPath("test.txt"), "This is a test");
         assertNotNull(location);
         String[] parsedURI = location.split("/");
-
-        Boolean success = currentAPI.getAttachments().delete(cas.getCaseNumber(),
-                parsedURI[parsedURI.length - 1]);
+        Boolean success = currentAPI.getAttachments().delete(cas.getCaseNumber(), parsedURI[parsedURI.length - 1]);
         assertTrue(success);
     }
 

@@ -15,6 +15,7 @@ import com.redhat.gss.redhat_support_lib.helpers.QueryBuilder;
 import com.redhat.gss.redhat_support_lib.parsers.AttachmentType;
 import com.redhat.gss.redhat_support_lib.parsers.CommentType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
+import javax.ws.rs.core.Response;
 
 public class Attachments extends BaseQuery {
     private ConnectionManager connectionManager = null;
@@ -180,8 +181,13 @@ public class Attachments extends BaseQuery {
             comments.add(comment);
         } else {
             String fullUrl = connectionManager.getConfig().getUrl() + url;
-            uri = upload(connectionManager.getConnection(), fullUrl, file,
-                    description).getStringHeaders().getFirst("location");
+            Response response = null;
+            try {
+                response = upload(connectionManager.getConnection(), fullUrl, file, description);
+                uri = response.getStringHeaders().getFirst("location");
+            } finally {
+                safeClose(response);
+            }
         }
         return uri;
     }

@@ -12,6 +12,7 @@ import com.redhat.gss.redhat_support_lib.parsers.LinkType;
 import com.redhat.gss.redhat_support_lib.web.ConnectionManager;
 
 public class Problems extends BaseQuery {
+
     private ConnectionManager connectionManager = null;
     static String url = "/rs/problems/";
 
@@ -20,42 +21,49 @@ public class Problems extends BaseQuery {
     }
 
     /**
-     * Queries the problems RESTful interface with a given string. RESTful
-     * method: https://api.access.redhat.com/rs/problems
+     * Queries the problems RESTful interface with a given string. RESTful method:
+     * https://api.access.redhat.com/rs/problems
      *
-     * @param content
-     *            string whose content you want diagnosed.
+     * @param content string whose content you want diagnosed.
      * @return An array of problems.
-     * @throws RequestException
-     *             An exception if there was a connection related issue.
+     * @throws RequestException An exception if there was a connection related issue.
      * @throws MalformedURLException
      */
     public List<LinkType> diagnoseStr(String content) throws RequestException,
             MalformedURLException {
 
         String fullUrl = connectionManager.getConfig().getUrl() + url;
-        Response resp = add(connectionManager.getConnection(), fullUrl, content);
-        com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
-                .readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
-        return ParseHelper.getLinksFromProblems(probs);
+        Response resp = null;
+        try {
+            resp = add(connectionManager.getConnection(), fullUrl, content);
+            com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
+                    .readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
+            return ParseHelper.getLinksFromProblems(probs);
+        } finally {
+            safeClose(resp);
+        }
     }
 
     /**
      * Queries the problems RESTful interface with a given file. RESTful method:
      * https://api.access.redhat.com/rs/problems
      *
-     * @param fileName
-     *            File name whose content you want diagnosed.
+     * @param fileName File name whose content you want diagnosed.
      * @return An array of problems.
      * @throws Exception
      */
     public List<LinkType> diagnoseFile(String fileName) throws Exception {
         String fullUrl = connectionManager.getConfig().getUrl() + url;
+        Response resp = null;
+        try {
+            resp = upload(connectionManager.getConnection(), fullUrl,
+                    new File(fileName), fileName);
+            com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
+                    .readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
+            return ParseHelper.getLinksFromProblems(probs);
+        } finally {
+            safeClose(resp);
+        }
 
-        Response resp = upload(connectionManager.getConnection(), fullUrl,
-                new File(fileName), fileName);
-        com.redhat.gss.redhat_support_lib.parsers.ProblemsType probs = resp
-                .readEntity(com.redhat.gss.redhat_support_lib.parsers.ProblemsType.class);
-        return ParseHelper.getLinksFromProblems(probs);
     }
 }

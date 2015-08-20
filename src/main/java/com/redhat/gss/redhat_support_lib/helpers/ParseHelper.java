@@ -27,11 +27,11 @@ public class ParseHelper {
         return links;
     }
 
-    public static Properties parseConfigFile(String fileName)
-            throws IOException {
+    public static Properties parseConfigFile(String fileName) throws IOException {
         Properties prop = new Properties();
-        InputStream is = new FileInputStream(fileName);
-        prop.load(is);
+        try (InputStream is = new FileInputStream(fileName)) {
+            prop.load(is);
+        }
         return prop;
     }
 }

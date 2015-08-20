@@ -28,11 +28,15 @@ public class Symptoms extends BaseQuery {
     public List<ExtractedSymptomType> retrieveSymptoms(String fileName)
             throws Exception {
         String fullUrl = connectionManager.getConfig().getUrl() + url;
-
-        Response response = upload(connectionManager.getConnection(), fullUrl,
-                new File(fileName), fileName);
-        com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptomsType symptoms = response
-                .readEntity(com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptomsType.class);
-        return symptoms.getExtractedSymptom();
+        Response response = null;
+        try {
+            response = upload(connectionManager.getConnection(), fullUrl,
+                    new File(fileName), fileName);
+            com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptomsType symptoms = response
+                    .readEntity(com.redhat.gss.redhat_support_lib.parsers.ExtractedSymptomsType.class);
+            return symptoms.getExtractedSymptom();
+        } finally {
+            safeClose(response);
+        }
     }
 }
