@@ -5,3 +5,18 @@ src/test/java/rhsl.config
 .DS_Store
 .settings/
 /bin/
+# ignore eclipse files
+.settings
+.metadata
+.checkstyle
+# ignore m2e annotation processing files
+.factorypath
+# ignore IDEA files
+*.iml
+*.ipr
+*.iws
+.idea
+# ignore NetBeans files
+nbactions.xml
+nb-configuration.xml
+catalog.xml

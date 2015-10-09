@@ -13,7 +13,7 @@
     
     <groupId>com.redhat.gss</groupId>
     <artifactId>redhat-support-lib-java</artifactId>
-    <version>2.0.11</version>
+    <version>2.0.12-SNAPSHOST</version>
     <name>redhat-support-lib-java</name>
     <url>https://github.com/redhataccess</url>
 
@@ -21,6 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <version.org.jboss.resteasy>3.0.13.Final</version.org.jboss.resteasy>
     </properties>
 
     <dependencies>
@@ -50,12 +51,12 @@
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
-            <version>3.0.11.Final</version>
+            <version>${version.org.jboss.resteasy}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
-            <version>3.0.11.Final</version>
+            <version>${version.org.jboss.resteasy}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -66,19 +67,13 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Need Java 5, which is the default since v2.3 of the maven-compiler-plugin. -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.5.1</version>
-                </plugin>
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -107,32 +102,9 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <!-- We use this plugin to ensure that our usage of the
-                maven-jaxb2-plugin is JDK 8 compatible -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
-                <version>1.0-alpha-2-redhat-1</version>
-                <executions>
-                    <execution>
-                        <id>set-additional-system-properties</id>
-                        <goals>
-                            <goal>set-system-properties</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <properties>
-                        <property>
-                            <name>javax.xml.accessExternalSchema</name>
-                            <value>all</value>
-                        </property>
-                    </properties>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jaxb2-maven-plugin</artifactId>
-                <version>1.6</version>
+                <version>2.2</version>
                 <executions>
                     <execution>
                         <id>xjc</id>
@@ -143,7 +115,9 @@
                 </executions>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <schemaFiles>strata.xsd</schemaFiles>
+                    <sources>
+                        <source>src/main/xsd/strata.xsd</source>
+                    </sources>
                     <packageName>com.redhat.gss.redhat_support_lib.parsers</packageName>
                     <extension>true</extension>
                     <bindingDirectory>binding.xjb</bindingDirectory>
@@ -152,7 +126,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>1.2</version>
+                <version>${version.enforcer.plugin}</version>
                 <executions>
                     <execution>
                         <configuration>
